@@ -4,6 +4,6 @@ for s in *.c; do
 	gcc -rdynamic -ggdb -g3 -Wall -Werror --std=c89 -D_POSIX_C_SOURCE=200112L -c $s
 done
 
-objects=""
+objects="cpu.o mem.o"
 
 gcc -rdynamic -ggdb -g3 pc.o $objects -o pc.out
