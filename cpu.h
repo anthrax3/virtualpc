@@ -12,6 +12,14 @@ enum instructions
     I_MUL,
     I_DIV,
     
+    I_SHR,
+    I_SHL,
+    
+    I_NOT,
+    I_AND,
+    I_OR,
+    I_XOR,
+    
     I_MOV,
     
     I_JMP,
@@ -19,7 +27,27 @@ enum instructions
     I_JNZ,
     
     I_TEST,
-    I_CMP
+    I_CMP,
+    
+    I_PUSH,
+    I_POP
+};
+
+enum instr_opt
+{
+    IO_REG_0,
+    IO_REG_1,
+    IO_REG_2,
+    IO_REG_3,
+    
+    IO_IMM,
+    IO_MEM
+};
+
+struct instr_opt_s
+{
+    enum instr_opt op1 : 4;
+    enum instr_opt op2 : 4;
 };
 
 struct cpu_registers_s
