@@ -7,29 +7,25 @@ OUT_NAME=pc.out
 TARGET_DIR=bin
 TARGET=$(TARGET_DIR)/$(OUT_NAME)
 SOURCES=$(shell find $(SRC_DIR) -name "*.c" -print)
-OBJECTS=$(SOURCES:.c=.o)
 DEPENDS=$(SOURCES:.c=.d)
 
-.PHONY: clean directories
+TARGETS=pc basm
+SOURCES := $(filter-out $(patsubst %,src/%.c,$(TARGETS)),$(SOURCES))
+OBJECTS=$(SOURCES:.c=.o)
+
+.PHONY: clean
 
 all:
 	mkdir -p $(TARGET_DIR)
-	$(MAKE) $(TARGET)
+	$(MAKE) $(addprefix $(TARGET_DIR)/,$(TARGETS))
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.d: %.c
-	$(CC) -M $(CFLAGS) $< > $@
-
-$(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJECTS) $(LDLIBS) -o $@
+$(TARGET_DIR)/%: $(SRC_DIR)/%.o $(OBJECTS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 clean:
 	find . -type f -name '*.o' -delete
 	find . -type f -name '*.d' -delete
 	rm -rf ./bin
-
-ifneq ($(MAKECMDGOALS), clean)
--include $(DEPENDS)
-endif
