@@ -25,7 +25,14 @@ cpu_run(struct cpu_s *in)
     while (!in->state.halt)
     {
         cpu_step(in);
-        ++in->state.regs.pc;
+        if (in->state.regs.flags & CF_JF)
+        {
+            in->state.regs.flags &= ~CF_JF;
+        }
+        else
+        {
+            ++in->state.regs.pc;
+        }
     }
 }
 
@@ -36,14 +43,176 @@ cpu_step(struct cpu_s *in)
     {
         return;
     }
-    uint8_t instr = memory_read(in->mem, in->state.regs.pc);
+    uint8_t instr = cpu_mem_read_remote_byte(in, in->state.regs.pc);
+    if (cpu_flag_isset(in, CF_DEBUGF))
+        printf("pc=%08x\t[pc]=%02x\n", in->state.regs.pc, instr);
     if (in->iset[instr] != NULL)
     {
         in->iset[instr](in);
     }
     else
     {
-        printf("ERROR: Undefined instruction: %hhx\n", instr);
-        in->state.halt = 1;
+        cpu_raise_exception(in, CPUE_CANNOT_EXECUTE);
     }
+}
+
+void
+cpu_raise_exception(struct cpu_s *in, enum cpu_exception ex)
+{
+    printf("[CPU] Exception: %d\n", ex);
+    in->state.halt = 1;
+    cpu_dump_information(in);
+}
+
+void
+cpu_dump_information(struct cpu_s *in)
+{
+    int i;
+    printf("=-= CPU INFORMATION =-=\n");
+    printf("Halted: %d\n", in->state.halt);
+    printf("General Purpose Registers:\n");
+    for (i = 0; i < 4; ++i)
+    {
+        printf("\t$r%d = 0x%08x\n", i, in->state.regs.rx[i]);
+    }
+    printf("Special Registers:\n");
+    printf("\t$pc = 0x%08x\n", in->state.regs.pc);
+    printf("\t$sp = 0x%08x\n", in->state.regs.sp);
+    printf("\t$flags = 0x%08x\n", in->state.regs.flags);
+    if (cpu_mem_is_readable(in, in->state.regs.pc, 1))
+    {
+
+        printf("Instruction at [pc]: %02x\n", cpu_mem_read_remote_byte(in, in->state.regs.pc));
+    }
+    else
+    {
+        printf("Can't access instruction at [pc]");
+    }
+    printf("=-= END OF CPU INFORMATION =-=\n");
+}
+
+void
+cpu_flag_set(struct cpu_s *in, enum cpu_flags flag)
+{
+    in->state.regs.flags |= flag;
+}
+
+void
+cpu_flag_unset(struct cpu_s *in, enum cpu_flags flag)
+{
+    in->state.regs.flags &= ~flag;
+}
+
+int
+cpu_flag_isset(struct cpu_s *in, enum cpu_flags flag)
+{
+    return in->state.regs.flags & flag;
+}
+
+int
+cpu_mem_is_readable(struct cpu_s *in, uint32_t addr, uint32_t size)
+{
+    return in->mem->size >= addr + size;
+}
+
+int
+cpu_mem_is_writable(struct cpu_s *in, uint32_t addr, uint32_t size)
+{
+    return cpu_mem_is_readable(in, addr, size);
+}
+
+uint8_t
+cpu_mem_read_immediate_byte(struct cpu_s *in)
+{
+    uint8_t result = cpu_mem_read_remote_byte(in, in->state.regs.pc + 1);
+    in->state.regs.pc += 1;
+    return result;
+}
+
+uint16_t
+cpu_mem_read_immediate_word(struct cpu_s *in)
+{
+    uint16_t result = cpu_mem_read_remote_word(in, in->state.regs.pc + 1);
+    in->state.regs.pc += 2;
+    return result;
+}
+
+uint32_t
+cpu_mem_read_immediate_dword(struct cpu_s *in)
+{
+    uint32_t result = cpu_mem_read_remote_dword(in, in->state.regs.pc + 1);
+    in->state.regs.pc += 4;
+    return result;
+}
+
+uint8_t
+cpu_mem_read_remote_byte(struct cpu_s *in, uint32_t addr)
+{
+    uint8_t result = 0xFF;
+    if (!cpu_mem_is_readable(in, addr, 1))
+    {
+        cpu_raise_exception(in, CPUE_CANNOT_READ);
+        return result;
+    }
+    result = *(uint8_t*)(&in->mem->data[addr]);
+    return result;
+}
+
+uint16_t
+cpu_mem_read_remote_word(struct cpu_s *in, uint32_t addr)
+{
+    uint16_t result = 0xFFFF;
+    if (!cpu_mem_is_readable(in, addr, 2))
+    {
+        cpu_raise_exception(in, CPUE_CANNOT_READ);
+        return result;
+    }
+    result = *(uint16_t*)(&in->mem->data[addr]);
+    return result;
+}
+
+uint32_t
+cpu_mem_read_remote_dword(struct cpu_s *in, uint32_t addr)
+{
+    uint32_t result = 0xFFFFFFFF;
+    if (!cpu_mem_is_readable(in, addr, 4))
+    {
+        cpu_raise_exception(in, CPUE_CANNOT_READ);
+        return result;
+    }
+    result = *(uint32_t*)(&in->mem->data[addr]);
+    return result;
+}
+
+void
+cpu_mem_write_remote_byte(struct cpu_s *in, uint32_t addr, uint8_t byte)
+{
+    if (!cpu_mem_is_writable(in, addr, 1))
+    {
+        cpu_raise_exception(in, CPUE_CANNOT_WRITE);
+        return;
+    }
+    *(uint8_t*)(&in->mem->data[addr]) = byte;
+}
+
+void
+cpu_mem_write_remote_word(struct cpu_s *in, uint32_t addr, uint16_t word)
+{
+    if (!cpu_mem_is_writable(in, addr, 2))
+    {
+        cpu_raise_exception(in, CPUE_CANNOT_WRITE);
+        return;
+    }
+    *(uint16_t*)(&in->mem->data[addr]) = word;
+}
+
+void
+cpu_mem_write_remote_dword(struct cpu_s *in, uint32_t addr, uint32_t dword)
+{
+    if (!cpu_mem_is_writable(in, addr, 4))
+    {
+        cpu_raise_exception(in, CPUE_CANNOT_WRITE);
+        return;
+    }
+    *(uint32_t*)(&in->mem->data[addr]) = dword;
 }
