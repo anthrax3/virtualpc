@@ -3,10 +3,23 @@
 
 #include <stdint.h>
 
+struct cpu_s;
+
+typedef void(*instruction_fn)(struct cpu_s *in);
+
 enum instructions
 {
     I_NOP = 0,
+    I_RESET,
+    I_CPUID,
     
+    I_SIZE8,
+    I_SIZE16,
+    I_SIZE32,
+
+    I_LOAD,     /* LOAD R0, 100  ; Loads address into register */
+    I_STORE,    /* STORE 100, R0 ; Stores register into address */
+
     I_ADD,
     I_SUB,
     I_MUL,
@@ -33,21 +46,9 @@ enum instructions
     I_POP
 };
 
-enum instr_opt
+enum cpu_flags
 {
-    IO_REG_0,
-    IO_REG_1,
-    IO_REG_2,
-    IO_REG_3,
-    
-    IO_IMM,
-    IO_MEM
-};
-
-struct instr_opt_s
-{
-    enum instr_opt op1 : 4;
-    enum instr_opt op2 : 4;
+    CF_ZF
 };
 
 struct cpu_registers_s
@@ -59,15 +60,24 @@ struct cpu_registers_s
     uint32_t flags;
 };
 
-struct cpu_s
+struct cpu_state_s
 {
     struct cpu_registers_s regs;
-    
     uint8_t halt;
 };
 
+struct cpu_s
+{
+    struct cpu_state_s state;
+    struct memory_s *mem;
+    instruction_fn *iset;
+};
+
 void
-cpu_init(struct cpu_s *out);
+cpu_init(struct cpu_s *out, struct memory_s *mem);
+
+void
+cpu_run(struct cpu_s *in);
 
 void
 cpu_reset(struct cpu_s *out);

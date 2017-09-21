@@ -36,16 +36,11 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.1737142867.1420378292" name="/" resourcePath="src">
-						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1365203049" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.base" unusedChildren="">
-							<tool id="cdt.managedbuild.tool.gnu.archiver.base.442068474" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.1697721117"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1480205195" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.831044255"/>
-							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.944981868" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1108129202"/>
-							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1019690396" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base.1292326531"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1081498083" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base.1787505484"/>
-							<tool id="cdt.managedbuild.tool.gnu.assembler.base.1576855335" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base.1276379591"/>
-						</toolChain>
-					</folderInfo>
+					<sourceEntries>
+						<entry excluding="src/iz|src/is|is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="basic" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/is"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/is/basic"/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
