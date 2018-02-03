@@ -1,7 +1,15 @@
-#ifndef PC_H
-#define PC_H
+#pragma once
 
-int
-main(int argc, const char **argv);
+#include "mem.h"
+#include "cpu.h"
+#include "exception.h"
 
-#endif /* PC_H */
+struct
+pc_s
+{
+	struct memory_s memory;
+	struct cpu_s cpu;
+};
+
+void pc_init(struct pc_s *pc);
+void pc_raise_exception(struct pc_s *pc, enum pc_exception_category category, int data);
