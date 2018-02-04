@@ -34,7 +34,7 @@ void viod_term_clock(struct vio_device_s *device)
 		uint32_t length = device->interface->basic_interface.registers[0];
 		uint32_t i = 0;
 		struct term_mapped_memory_s *memory = (struct term_mapped_memory_s *) device->state.mapped_memory;
-		for (; i < sizeof(memory->buffer); ++i)
+		for (; i < sizeof(memory->buffer); i < length; ++i)
 		{
 			putc(memory->buffer[i], stdout);
 		}
