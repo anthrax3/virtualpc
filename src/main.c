@@ -7,6 +7,7 @@
 
 #include "pc.h"
 #include "is/basic/basic.h"
+#include "dev/term.h"
 
 int
 main(int argc, const char **argv)
@@ -14,6 +15,8 @@ main(int argc, const char **argv)
 	struct pc_s pc;
 
 	pc_init(&pc);
+
+	vio_add_device(&pc->vio, viod_term);
 
     int it = 0;
     iset_basic_init(pc.cpu.iset);

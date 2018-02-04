@@ -2,6 +2,7 @@
 
 #include "mem.h"
 #include "cpu.h"
+#include "vio/vio.h"
 #include "exception.h"
 
 struct
@@ -9,6 +10,7 @@ pc_s
 {
 	struct memory_s memory;
 	struct cpu_s cpu;
+	struct vio_s vio;
 };
 
 void pc_init(struct pc_s *pc);
