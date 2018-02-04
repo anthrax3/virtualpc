@@ -1,0 +1,8 @@
+0 - byte - &register
+1 - byte - &(*register)
+2 - byte + dword - &(*register + offset:dword)
+3 - byte + byte + dword - &(*register * factor:byte + offset:dword)
+4 - byte + byte + byte + dword - &(*register * factor:byte + *register + offset:dword)
+5 - dword - &absolute
+6 - dword - &(*absolute)
+7 - dword - &(pc + offset:dword)
