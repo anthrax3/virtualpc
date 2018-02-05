@@ -9,6 +9,7 @@
 #include "bus.h"
 
 #include <stddef.h>
+#include <string.h>
 
 enum bus_error vio_bus_read(struct vio_s *vio, uintptr_t address, uintptr_t length, void *buffer);
 enum bus_error vio_bus_write(struct vio_s *vio, uintptr_t address, uintptr_t length, void *buffer);

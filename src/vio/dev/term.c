@@ -5,10 +5,11 @@
  *      Author: nullifiedcat
  */
 
-#include "term.h"
+#include "vio/dev/term.h"
 #include "vio/vio.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 // Exposed functions
 

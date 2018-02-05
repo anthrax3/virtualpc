@@ -1,9 +1,29 @@
 #include "cpu.h"
 #include "mem.h"
+#include "pc.h"
+#include "bus.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+/*
+0 - 1 - byte - &register
+1 - 1 - byte - &(*register)
+2 - 5 - byte + dword - &(*register + offset:dword)
+3 - 6 - byte + byte + dword - &(*register * factor:byte + offset:dword)
+4 - 7 - byte + byte + byte + dword - &(*register * factor:byte + *register + offset:dword)
+5 - 4 - dword - &absolute
+6 - 4 - dword - &(*absolute)
+7 - 4 - dword - &(pc + offset:dword)
+ */
+
+static uint8_t cpu_addressing_offsets[] = {
+	1, 1, 5, 6,
+	7, 4, 4, 4
+};
+
+void cpu_fetch(struct cpu_s *cpu);
 
 void
 cpu_init(struct cpu_s *cpu, struct pc_s *pc)
@@ -19,7 +39,7 @@ cpu_reset(struct cpu_s *cpu)
 }
 
 void
-cpu_run(struct cpu_s *cpu)
+cpu_start(struct cpu_s *cpu)
 {
     while (!cpu->state.halt)
     {
@@ -36,57 +56,53 @@ cpu_run(struct cpu_s *cpu)
 }
 
 void
-cpu_step(struct cpu_s *in)
+cpu_step(struct cpu_s *cpu)
 {
-    if (in->state.halt != 0)
-    {
+    if (cpu->state.halt == true)
         return;
-    }
-    uint8_t instr = cpu_mem_read_remote_byte(in, in->state.regs.pc);
-    if (cpu_flag_isset(in, CF_DEBUGF))
-        printf("pc=%08x\t[pc]=%02x\n", in->state.regs.pc, instr);
-    if (in->iset[instr] != NULL)
+
+    cpu_fetch(cpu);
+
+    if (cpu_flag_isset(cpu, CF_DEBUGF))
     {
-        in->iset[instr](in);
+    	printf("pc = %08x | ", cpu->state.regs.pc);
+    	uint8_t i = 0;
+    	uint8_t l = cpu_instruction_length(cpu->state.instruction[0]);
+    	for (; i < l && i < 16; ++i)
+    	{
+    		printf("%02x ", cpu->state.instruction[0]);
+    	}
+    	printf("\n");
     }
-    else
-    {
-        cpu_raise_exception(in, CPUE_CANNOT_EXECUTE);
-    }
+
 }
 
 void
-cpu_raise_exception(struct cpu_s *in, enum cpu_exception ex)
-{
-    printf("[CPU] Exception: %d\n", ex);
-    in->state.halt = 1;
-    cpu_dump_information(in);
-}
-
-void
-cpu_dump_information(struct cpu_s *in)
+cpu_dump_information(struct cpu_s *cpu)
 {
     int i;
     printf("=-= CPU INFORMATION =-=\n");
-    printf("Halted: %d\n", in->state.halt);
+    printf("Halted: %d\n", cpu->state.halt);
     printf("General Purpose Registers:\n");
-    for (i = 0; i < 4; ++i)
+    for (i = 0; i < 8; ++i)
     {
-        printf("\t$r%d = 0x%08x\n", i, in->state.regs.rx[i]);
+        printf("\t$r%c = 0x%08x\n", 'a' + i, cpu->state.regs.rx[i]);
     }
     printf("Special Registers:\n");
-    printf("\t$pc = 0x%08x\n", in->state.regs.pc);
-    printf("\t$sp = 0x%08x\n", in->state.regs.sp);
-    printf("\t$flags = 0x%08x\n", in->state.regs.flags);
-    if (cpu_mem_is_readable(in, in->state.regs.pc, 1))
-    {
+    printf("\t$pc = 0x%08x\n", cpu->state.regs.pc);
+    printf("\t$sp = 0x%08x\n", cpu->state.regs.sp);
+    printf("\t$flags = 0x%08x\n", cpu->state.regs.flags);
 
-        printf("Instruction at [pc]: %02x\n", cpu_mem_read_remote_byte(in, in->state.regs.pc));
-    }
-    else
-    {
-        printf("Can't access instruction at [pc]");
-    }
+    printf("Instruction cache:\n");
+
+	printf("pc = %08x | ", cpu->state.regs.pc);
+	uint8_t length = cpu_instruction_length(cpu->state.instruction[0]);
+	for (i = 0; i < length && i < 16; ++i)
+	{
+		printf("%02x ", cpu->state.instruction[0]);
+	}
+	printf("\n");
+
     printf("=-= END OF CPU INFORMATION =-=\n");
 }
 
@@ -106,4 +122,46 @@ bool
 cpu_flag_isset(struct cpu_s *in, enum cpu_flags flag)
 {
     return !!(in->state.regs.flags & flag);
+}
+
+uint8_t
+cpu_instruction_length(uint8_t head)
+{
+	uint8_t size = ((head & 0xc0) >> 6) & 0x3;
+	uint8_t addr1 = ((head & 0x38) >> 3) & 0x7;
+	uint8_t addr2 = (head & 0x07);
+	uint8_t final_length = 1;
+
+	if (size == 3)
+		return 0;
+
+	final_length += (1 << size);
+	final_length += cpu_addressing_offsets[addr1];
+	final_length += cpu_addressing_offsets[addr2];
+
+	return final_length;
+}
+
+void cpu_fetch(struct cpu_s *cpu)
+{
+	uint8_t head;
+	uint8_t length;
+
+	if (bus_read(&cpu->pc->bus, cpu->state.regs.pc, 1, &head) != BER_SUCCESS)
+	{
+		/* TODO ... */
+	}
+
+	length = cpu_instruction_length(head);
+
+	/* Short instruction with no operands */
+	if (length == 0)
+	{
+		cpu->state.instruction[0] = head;
+		cpu->state.regs.pc++;
+		return;
+	}
+
+	bus_read(&cpu->pc->bus, cpu->state.regs.pc, length, cpu->state.instruction);
+	cpu->state.regs.pc += length;
 }

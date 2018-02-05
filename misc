@@ -1,8 +1,18 @@
-0 - byte - &register
-1 - byte - &(*register)
-2 - byte + dword - &(*register + offset:dword)
-3 - byte + byte + dword - &(*register * factor:byte + offset:dword)
-4 - byte + byte + byte + dword - &(*register * factor:byte + *register + offset:dword)
-5 - dword - &absolute
-6 - dword - &(*absolute)
-7 - dword - &(pc + offset:dword)
+
+
+0 - 1 - byte - &register
+1 - 1 - byte - &(*register)
+2 - 5 - byte + dword - &(*register + offset:dword)
+3 - 6 - byte + byte + dword - &(*register * factor:byte + offset:dword)
+4 - 7 - byte + byte + byte + dword - &(*register * factor:byte + *register + offset:dword)
+5 - 4 - dword - &absolute
+6 - 4 - dword - &(*absolute)
+7 - 4 - dword - &(pc + offset:dword)
+
+instruction =
+size:2, addressing: 6, instruction:size, address...
+
+0 - byte
+1 - word
+2 - dword
+3 - addressing is the instruction!

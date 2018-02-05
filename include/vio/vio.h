@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../pc.h"
 #include "devicecat.h"
 
 /*
@@ -11,6 +10,7 @@
 #define VIO_GP_REGISTERS 8
 #define VIO_DATA_SIZE 64
 
+struct vio_internal_device_s;
 
 struct vio_device_interface_s
 {

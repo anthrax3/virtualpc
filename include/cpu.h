@@ -25,6 +25,7 @@ struct cpu_registers_s
 struct cpu_state_s
 {
     struct cpu_registers_s regs;
+    uint8_t instruction[16];
     bool halt;
 };
 
@@ -57,3 +58,6 @@ cpu_flag_unset(struct cpu_s *cpu, enum cpu_flags flag);
 
 bool
 cpu_flag_isset(struct cpu_s *cpu, enum cpu_flags flag);
+
+uint8_t
+cpu_instruction_length(uint8_t head);
