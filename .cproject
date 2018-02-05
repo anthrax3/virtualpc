@@ -41,7 +41,6 @@
 						<entry excluding="vio|dev" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
 						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include/vio"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include/vio/dev"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/basm"/>
 						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/vio"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/vio/dev"/>
 					</sourceEntries>
