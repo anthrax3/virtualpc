@@ -19,6 +19,9 @@ main(int argc, const char **argv)
 
 	pc_init(&pc);
 	vio_add_device(&pc.vio, viod_term);
+
+	cpu_flag_set(&pc.cpu, CF_DEBUGF);
+
     cpu_start(&pc.cpu);
     printf("CPU done\n");
     return 0;
