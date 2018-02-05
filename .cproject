@@ -37,10 +37,13 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src/dev|src/vio|vio|src/basm|src/iz|src/is|is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="dev|include|src/dev|src/vio|vio|src/basm|src/iz|src/is|is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="vio|dev" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
+						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include/vio"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include/vio/dev"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/basm"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/dev"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/vio"/>
+						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/vio"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/vio/dev"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
