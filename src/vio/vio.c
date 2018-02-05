@@ -8,6 +8,8 @@
 #include "vio/vio.h"
 #include "bus.h"
 
+#include <stddef.h>
+
 enum bus_error vio_bus_read(struct vio_s *vio, uintptr_t address, uintptr_t length, void *buffer);
 enum bus_error vio_bus_write(struct vio_s *vio, uintptr_t address, uintptr_t length, void *buffer);
 
@@ -51,18 +53,42 @@ uint32_t vio_add_device(struct vio_s *vio, struct vio_device_implementation_s im
 
 void vio_clock(struct vio_s *vio)
 {
+	uint32_t i = 0;
 
+	for (; i < VIO_MAX_DEVICES; ++i)
+	{
+		vio->devices[i].implementation.clock(&vio->devices[i]);
+	}
 }
 
 enum bus_error vio_bus_read(struct vio_s *vio, uintptr_t address, uintptr_t length, void *buffer)
 {
+	/* I'll just leave it like that for now.
+	 * Later I'll have to implement internal boundary checks */
 
+	if (address + length >= sizeof(struct vio_memory_s))
+		return BER_RANGE;
+
+	memcpy(buffer, ((uint8_t *)&vio->memory) + address, length);
 
 	return BER_SUCCESS;
 }
 
 enum bus_error vio_bus_write(struct vio_s *vio, uintptr_t address, uintptr_t length, void *buffer)
 {
+	/* Same as with _read */
+
+	if (address + length >= sizeof(struct vio_memory_s))
+		return BER_RANGE;
+
+	if (address >= offsetof(struct vio_memory_s, readonly))
+		return BER_ACCESS;
+
+	if (address + length >= offsetof(struct vio_memory_s, readonly))
+		return BER_ALIGN;
+
+	memcpy(((uint8_t *)&vio->memory) + address, buffer, length);
+
 	return BER_SUCCESS;
 }
 

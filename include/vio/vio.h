@@ -8,11 +8,14 @@
  */
 
 #define VIO_MAX_DEVICES 32
+#define VIO_GP_REGISTERS 8
+#define VIO_DATA_SIZE 64
+
 
 struct vio_device_interface_s
 {
-	uint32_t registers[8];
-	uint8_t  data[64];
+	uint32_t registers[VIO_GP_REGISTERS];
+	uint8_t  data[VIO_DATA_SIZE];
 };
 
 struct vio_device_info_s

@@ -6,13 +6,9 @@
  */
 
 #include "term.h"
+#include "vio/vio.h"
 
 #include <stdlib.h>
-
-struct term_mapped_memory_s
-{
-	char buffer[32];
-};
 
 // Exposed functions
 
@@ -22,20 +18,20 @@ void viod_term_init(struct vio_internal_device_s *device)
 
 void viod_term_clock(struct vio_internal_device_s *device)
 {
-	switch (device->interface->basic_interface.command)
+	switch (device->interface->registers[0])
 	{
-	case VDCS_TERM_PRINT_STRING:
+	case VDCS_TERM_PRINT:
 	{
 		// Length of string is stored in the first register
-		uint32_t length = device->interface->basic_interface.registers[0];
+		uint32_t length = device->interface->registers[1];
 		uint32_t i = 0;
-		struct term_mapped_memory_s *memory = (struct term_mapped_memory_s *) device->state.mapped_memory;
-		for (; i < sizeof(memory->buffer) && i < length; ++i)
+
+		for (; i < VIO_DATA_SIZE && i < length; ++i)
 		{
-			putc(memory->buffer[i], stdout);
+			putc(device->interface->data[i], stdout);
 		}
 		// Reset the command
-		device->interface->basic_interface.command = 0;
+		device->interface->registers[0] = 0;
 	}
 	}
 }
@@ -51,7 +47,6 @@ struct vio_device_implementation_s viod_term = {
 	.info = (struct vio_device_info_s) {
 		.category = VDC_OUTPUT,
 		.vendor = VDV_GENUINE_CAT,
-		.device = VD_GENUINE_CAT_OUTPUT_TERMINAL,
-		.map_length = sizeof(struct term_mapped_memory_s)
+		.device = VD_GENUINE_CAT_OUTPUT_TERMINAL
 	}
 };

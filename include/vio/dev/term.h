@@ -11,7 +11,7 @@
 
 enum viod_term_commands
 {
-	VDCS_TERM_PRINT_STRING = 1
+	VDCS_TERM_PRINT = 1
 };
 
 extern struct vio_device_implementation_s viod_term;
