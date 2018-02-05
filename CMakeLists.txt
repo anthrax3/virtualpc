@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
 project(virtualpc C)
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_FLAGS "-Werror -Wall")
 
 file(GLOB_RECURSE SOURCES "src/*.c") 

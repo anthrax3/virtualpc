@@ -27,17 +27,17 @@ enum bus_error
     BER_ALIGN
 };
 
-typedef enum bus_error (*bus_function)(void *, uintptr_t, uintptr_t, void *);
+typedef enum bus_error (*bus_function)(void *, uint32_t, uint32_t, void *);
 
 struct bus_memory_mapping_s
 {
-    uintptr_t address;
-    uintptr_t length;
+    uint32_t address;
+    uint32_t length;
 
     void *user;
-    enum bus_error (*read)(void *user, uintptr_t address, uintptr_t length,
+    enum bus_error (*read)(void *user, uint32_t address, uint32_t length,
                            void *buffer);
-    enum bus_error (*write)(void *user, uintptr_t address, uintptr_t length,
+    enum bus_error (*write)(void *user, uint32_t address, uint32_t length,
                             void *buffer);
 
     struct bus_memory_mapping_s *prev;
@@ -51,17 +51,17 @@ struct bus_s
 };
 
 void bus_init(struct bus_s *bus, struct pc_s *pc);
-struct bus_memory_mapping_s *bus_map_at(struct bus_s *bus, uintptr_t address);
+struct bus_memory_mapping_s *bus_map_at(struct bus_s *bus, uint32_t address);
 
 enum bus_error bus_address_check(struct bus_s *bus,
                                  struct bus_memory_mapping_s *mapping,
-                                 uintptr_t address, uintptr_t length);
-enum bus_error bus_memory_map(struct bus_s *bus, uintptr_t address,
-                              uintptr_t length, void *user, bus_function read,
+                                 uint32_t address, uint32_t length);
+enum bus_error bus_memory_map(struct bus_s *bus, uint32_t address,
+                              uint32_t length, void *user, bus_function read,
                               bus_function write);
-enum bus_error bus_memory_unmap(struct bus_s *bus, uintptr_t address);
+enum bus_error bus_memory_unmap(struct bus_s *bus, uint32_t address);
 
-enum bus_error bus_read(struct bus_s *bus, uintptr_t address, uintptr_t length,
+enum bus_error bus_read(struct bus_s *bus, uint32_t address, uint32_t length,
                         void *buffer);
-enum bus_error bus_write(struct bus_s *bus, uintptr_t address, uintptr_t length,
+enum bus_error bus_write(struct bus_s *bus, uint32_t address, uint32_t length,
                          void *buffer);

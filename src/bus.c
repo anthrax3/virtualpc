@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 void bus_init(struct bus_s *bus, struct pc_s *pc)
 {
@@ -17,7 +18,7 @@ void bus_init(struct bus_s *bus, struct pc_s *pc)
     bus->pc = pc;
 }
 
-struct bus_memory_mapping_s *bus_map_at(struct bus_s *bus, uintptr_t address)
+struct bus_memory_mapping_s *bus_map_at(struct bus_s *bus, uint32_t address)
 {
     struct bus_memory_mapping_s *current;
 
@@ -39,15 +40,14 @@ struct bus_memory_mapping_s *bus_map_at(struct bus_s *bus, uintptr_t address)
 
 enum bus_error bus_address_check(struct bus_s *bus,
                                  struct bus_memory_mapping_s *mapping,
-                                 uintptr_t address, uintptr_t length)
+                                 uint32_t address, uint32_t length)
 {
     /* Mapping must exist */
     if (mapping == NULL)
         return BER_EXIST;
 
     /* The requested region must be located completely inside the mapping */
-    uintptr_t map_remaining_length =
-        mapping->length + mapping->address - address;
+    uint32_t map_remaining_length = mapping->length - (address - mapping->address);
 
     if (length > map_remaining_length)
         return BER_OVERLAP;
@@ -55,8 +55,8 @@ enum bus_error bus_address_check(struct bus_s *bus,
     return BER_SUCCESS;
 }
 
-enum bus_error bus_memory_map(struct bus_s *bus, uintptr_t address,
-                              uintptr_t length, void *user, bus_function read,
+enum bus_error bus_memory_map(struct bus_s *bus, uint32_t address,
+                              uint32_t length, void *user, bus_function read,
                               bus_function write)
 {
     struct bus_memory_mapping_s *current = bus->mappings;
@@ -67,7 +67,7 @@ enum bus_error bus_memory_map(struct bus_s *bus, uintptr_t address,
 
     if (length & 0xFF)
         length += 0x100;
-    length &= 0xFF;
+    length &= ~0xFF;
 
     while (current)
     {
@@ -91,7 +91,12 @@ enum bus_error bus_memory_map(struct bus_s *bus, uintptr_t address,
     struct bus_memory_mapping_s *mapping =
         calloc(1, sizeof(struct bus_memory_mapping_s));
 
-    current->next    = mapping;
+    if (current)
+        current->next = mapping;
+
+    if (bus->mappings == NULL)
+        bus->mappings = mapping;
+
     mapping->prev    = current;
     mapping->address = address;
     mapping->length  = length;
@@ -99,17 +104,19 @@ enum bus_error bus_memory_map(struct bus_s *bus, uintptr_t address,
     mapping->read    = read;
     mapping->write   = write;
 
+    printf("Bus: mapped region %08x - %08x\n", mapping->address, mapping->address + mapping->length);
+
     return BER_SUCCESS;
 }
 
-enum bus_error bus_memory_unmap(struct bus_s *bus, uintptr_t address)
+enum bus_error bus_memory_unmap(struct bus_s *bus, uint32_t address)
 {
     /* to be implemented */
 
     return BER_OTHER;
 }
 
-enum bus_error bus_read(struct bus_s *bus, uintptr_t address, uintptr_t length,
+enum bus_error bus_read(struct bus_s *bus, uint32_t address, uint32_t length,
                         void *buffer)
 {
     struct bus_memory_mapping_s *mapping = bus_map_at(bus, address);
@@ -123,7 +130,7 @@ enum bus_error bus_read(struct bus_s *bus, uintptr_t address, uintptr_t length,
                          buffer);
 }
 
-enum bus_error bus_write(struct bus_s *bus, uintptr_t address, uintptr_t length,
+enum bus_error bus_write(struct bus_s *bus, uint32_t address, uint32_t length,
                          void *buffer)
 {
     struct bus_memory_mapping_s *mapping = bus_map_at(bus, address);

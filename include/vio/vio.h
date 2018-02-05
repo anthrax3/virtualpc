@@ -70,7 +70,7 @@ struct vio_s
     struct vio_memory_s memory;
 };
 
-void vio_init(struct vio_s *vio, struct pc_s *pc, uintptr_t address);
+void vio_init(struct vio_s *vio, struct pc_s *pc, uint32_t address);
 uint32_t vio_add_device(struct vio_s *vio,
                         struct vio_device_implementation_s implementation);
 void vio_clock(struct vio_s *vio);

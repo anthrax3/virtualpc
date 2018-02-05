@@ -16,3 +16,9 @@ size:2, addressing: 6, instruction:size, address...
 1 - word
 2 - dword
 3 - addressing is the instruction!
+
+Memory:
+
+Memory before 0x100000 is reserved for system
+
+0x100000 - 0x200000 is available for programs 

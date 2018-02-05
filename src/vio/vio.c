@@ -7,21 +7,26 @@
 
 #include "vio/vio.h"
 #include "bus.h"
+#include "pc.h"
 
 #include <stddef.h>
 #include <string.h>
+#include <stdio.h>
 
-enum bus_error vio_bus_read(struct vio_s *vio, uintptr_t address,
-                            uintptr_t length, void *buffer);
-enum bus_error vio_bus_write(struct vio_s *vio, uintptr_t address,
-                             uintptr_t length, void *buffer);
+enum bus_error vio_bus_read(struct vio_s *vio, uint32_t address,
+                            uint32_t length, void *buffer);
+enum bus_error vio_bus_write(struct vio_s *vio, uint32_t address,
+                             uint32_t length, void *buffer);
 
-void vio_init(struct vio_s *vio, struct pc_s *pc, uintptr_t address)
+void vio_init(struct vio_s *vio, struct pc_s *pc, uint32_t address)
 {
     memset(vio, 0, sizeof(struct vio_s));
 
     vio->pc             = pc;
     vio->next_device_id = 1;
+
+    enum bus_error error = bus_memory_map(&pc->bus, address, sizeof(struct vio_memory_s), vio, (bus_function)vio_bus_read, (bus_function)vio_bus_write);
+    printf("Virtual I/O: bus status %d\n", error);
 }
 
 uint32_t vio_add_device(struct vio_s *vio,
@@ -67,8 +72,8 @@ void vio_clock(struct vio_s *vio)
     }
 }
 
-enum bus_error vio_bus_read(struct vio_s *vio, uintptr_t address,
-                            uintptr_t length, void *buffer)
+enum bus_error vio_bus_read(struct vio_s *vio, uint32_t address,
+                            uint32_t length, void *buffer)
 {
     /* I'll just leave it like that for now.
      * Later I'll have to implement internal boundary checks */
@@ -81,8 +86,8 @@ enum bus_error vio_bus_read(struct vio_s *vio, uintptr_t address,
     return BER_SUCCESS;
 }
 
-enum bus_error vio_bus_write(struct vio_s *vio, uintptr_t address,
-                             uintptr_t length, void *buffer)
+enum bus_error vio_bus_write(struct vio_s *vio, uint32_t address,
+                             uint32_t length, void *buffer)
 {
     /* Same as with _read */
 
