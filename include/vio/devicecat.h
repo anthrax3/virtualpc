@@ -11,18 +11,18 @@
 
 enum viod_category
 {
-	VDC_INPUT,
-	VDC_OUTPUT,
-	VDC_UNKNOWN
+    VDC_INPUT,
+    VDC_OUTPUT,
+    VDC_UNKNOWN
 };
 
 enum viod_vendor
 {
-	VDV_GENUINE_CAT,
-	VDV_UNKNOWN
+    VDV_GENUINE_CAT,
+    VDV_UNKNOWN
 };
 
 enum vdv_genuine_cat_devices
 {
-	VD_GENUINE_CAT_OUTPUT_TERMINAL
+    VD_GENUINE_CAT_OUTPUT_TERMINAL
 };

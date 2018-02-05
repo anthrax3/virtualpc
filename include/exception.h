@@ -9,7 +9,7 @@
 
 enum pc_exception_category
 {
-	PCEXCAT_BUS,
-	PCEXCAT_CPU,
-	PCEXCAT_DEVICE
+    PCEXCAT_BUS,
+    PCEXCAT_CPU,
+    PCEXCAT_DEVICE
 };

@@ -5,7 +5,7 @@
 
 struct cpu_s;
 
-typedef void(*instruction_fn)(struct cpu_s *in);
+typedef void (*instruction_fn)(struct cpu_s *in);
 
 enum cpu_flags
 {
@@ -31,33 +31,24 @@ struct cpu_state_s
 
 struct cpu_s
 {
-	struct pc_s *pc;
+    struct pc_s *pc;
     struct cpu_state_s state;
 };
 
-void
-cpu_init(struct cpu_s *cpu, struct pc_s *pc);
+void cpu_init(struct cpu_s *cpu, struct pc_s *pc);
 
-void
-cpu_start(struct cpu_s *cpu);
+void cpu_start(struct cpu_s *cpu);
 
-void
-cpu_reset(struct cpu_s *cpu);
+void cpu_reset(struct cpu_s *cpu);
 
-void
-cpu_step(struct cpu_s *cpu);
+void cpu_step(struct cpu_s *cpu);
 
-void
-cpu_dump_information(struct cpu_s *cpu);
+void cpu_dump_information(struct cpu_s *cpu);
 
-void
-cpu_flag_set(struct cpu_s *cpu, enum cpu_flags flag);
+void cpu_flag_set(struct cpu_s *cpu, enum cpu_flags flag);
 
-void
-cpu_flag_unset(struct cpu_s *cpu, enum cpu_flags flag);
+void cpu_flag_unset(struct cpu_s *cpu, enum cpu_flags flag);
 
-bool
-cpu_flag_isset(struct cpu_s *cpu, enum cpu_flags flag);
+bool cpu_flag_isset(struct cpu_s *cpu, enum cpu_flags flag);
 
-uint8_t
-cpu_instruction_length(uint8_t head);
+uint8_t cpu_instruction_length(uint8_t head);

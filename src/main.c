@@ -12,19 +12,16 @@
 
 #include <stdio.h>
 
-int
-main(int argc, const char **argv)
+int main(int argc, const char **argv)
 {
-	struct pc_s pc;
+    struct pc_s pc;
 
-	pc_init(&pc);
-	vio_add_device(&pc.vio, viod_term);
+    pc_init(&pc);
+    vio_add_device(&pc.vio, viod_term);
 
-	cpu_flag_set(&pc.cpu, CF_DEBUGF);
+    cpu_flag_set(&pc.cpu, CF_DEBUGF);
 
     cpu_start(&pc.cpu);
     printf("CPU done\n");
     return 0;
 }
-
-
