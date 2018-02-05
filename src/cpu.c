@@ -6,32 +6,31 @@
 #include <stdio.h>
 
 void
-cpu_init(struct cpu_s *out, struct memory_s *mem)
+cpu_init(struct cpu_s *cpu, struct pc_s *pc)
 {
-    cpu_reset(out);
-    out->iset = calloc(256, sizeof(instruction_fn));
-    out->mem = mem;
+    cpu->pc = pc;
+    cpu_reset(cpu);
 }
 
 void
-cpu_reset(struct cpu_s *out)
+cpu_reset(struct cpu_s *cpu)
 {
-    memset(&out->state, 0, sizeof(struct cpu_state_s));
+    memset(&cpu->state, 0, sizeof(struct cpu_state_s));
 }
 
 void
-cpu_run(struct cpu_s *in)
+cpu_run(struct cpu_s *cpu)
 {
-    while (!in->state.halt)
+    while (!cpu->state.halt)
     {
-        cpu_step(in);
-        if (in->state.regs.flags & CF_JF)
+        cpu_step(cpu);
+        if (cpu->state.regs.flags & CF_JF)
         {
-            in->state.regs.flags &= ~CF_JF;
+        	cpu->state.regs.flags &= ~CF_JF;
         }
         else
         {
-            ++in->state.regs.pc;
+            ++cpu->state.regs.pc;
         }
     }
 }

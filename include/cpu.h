@@ -35,25 +35,25 @@ struct cpu_s
 };
 
 void
-cpu_init(struct cpu_s *out, struct pc_s *pc);
+cpu_init(struct cpu_s *cpu, struct pc_s *pc);
 
 void
-cpu_start(struct cpu_s *in);
+cpu_start(struct cpu_s *cpu);
 
 void
-cpu_reset(struct cpu_s *in);
+cpu_reset(struct cpu_s *cpu);
 
 void
-cpu_step(struct cpu_s *in);
+cpu_step(struct cpu_s *cpu);
 
 void
-cpu_dump_information(struct cpu_s *in);
+cpu_dump_information(struct cpu_s *cpu);
 
 void
-cpu_flag_set(struct cpu_s *in, enum cpu_flags flag);
+cpu_flag_set(struct cpu_s *cpu, enum cpu_flags flag);
 
 void
-cpu_flag_unset(struct cpu_s *in, enum cpu_flags flag);
+cpu_flag_unset(struct cpu_s *cpu, enum cpu_flags flag);
 
 bool
-cpu_flag_isset(struct cpu_s *in, enum cpu_flags flag);
+cpu_flag_isset(struct cpu_s *cpu, enum cpu_flags flag);
