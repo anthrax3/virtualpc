@@ -16,11 +16,11 @@ struct term_mapped_memory_s
 
 // Exposed functions
 
-void viod_term_init(struct vio_device_s *device)
+void viod_term_init(struct vio_internal_device_s *device)
 {
 }
 
-void viod_term_clock(struct vio_device_s *device)
+void viod_term_clock(struct vio_internal_device_s *device)
 {
 	switch (device->interface->basic_interface.command)
 	{
@@ -40,7 +40,7 @@ void viod_term_clock(struct vio_device_s *device)
 	}
 }
 
-void viod_term_destroy(struct vio_device_s *device)
+void viod_term_destroy(struct vio_internal_device_s *device)
 {
 }
 

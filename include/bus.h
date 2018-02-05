@@ -23,6 +23,7 @@ enum bus_error
 	BER_EXIST,
 	BER_ACCESS,
 	BER_OVERLAP,
+	BER_RANGE,
 	BER_ALIGN
 };
 
