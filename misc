@@ -1,13 +1,13 @@
 
 
-0 - 1 - byte - &register
-1 - 1 - byte - &(*register)
-2 - 5 - byte + dword - &(*register + offset:dword)
-3 - 6 - byte + byte + dword - &(*register * factor:byte + offset:dword)
-4 - 7 - byte + byte + byte + dword - &(*register * factor:byte + *register + offset:dword)
-5 - 4 - dword - &absolute
-6 - 4 - dword - &(*absolute)
-7 - 4 - dword - &(pc + offset:dword)
+0 - 4 - dword - absolute: 100h
+1 - 4 - dword - &(*absolute): [100h]
+2 - 4 - dword - &(pc + offset:dword): (-100h)
+3 - 1 - byte - &register: ra
+4 - 1 - byte - &(*register): [ra]
+5 - 5 - byte + dword - &(*register + offset:dword): [ra + 4]
+6 - 4 - byte + byte + word - &(*register + *register *factor:word): [ra + rb * 2]
+7 - 0 - no operand
 
 instruction =
 size:2, addressing: 6, instruction:size, address...
