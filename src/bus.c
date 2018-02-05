@@ -8,6 +8,7 @@
 #include "bus.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 void bus_init(struct bus_s *bus, struct pc_s *pc)
 {
@@ -24,7 +25,7 @@ struct bus_memory_mapping_s *bus_map_at(struct bus_s *bus, uintptr_t address)
 
 	while (current)
 	{
-		if (address >= current->address && address <= current->address + current->length);
+		if (address >= current->address && address <= current->address + current->length)
 		{
 			return current;
 		}
@@ -39,12 +40,17 @@ enum bus_error bus_address_check(struct bus_s *bus, uint8_t permissions, uintptr
 {
 	struct bus_memory_mapping_s *mapping = bus_map_at(bus, address);
 
+	return bus_address_check_in_map(bus, mapping, permissions, address, length);
+}
+
+enum bus_error bus_address_check_in_map(struct bus_s *bus, struct bus_memory_mapping_s *mapping, uint8_t permissions, uintptr_t address, uintptr_t length)
+{
 	/* Mapping must exist */
 	if (mapping == NULL)
 		return BER_EXIST;
 
 	/* Permissions must be set */
-	if (permissions & mapping->permissions != permissions)
+	if ((permissions & mapping->permissions) != permissions)
 		return BER_ACCESS;
 
 	/* The requested region must be located completely inside the mapping */
@@ -59,6 +65,11 @@ enum bus_error bus_address_check(struct bus_s *bus, uint8_t permissions, uintptr
 enum bus_error bus_memory_map(struct bus_s *bus, uintptr_t address, uintptr_t length, void *memory, uint8_t permissions)
 {
 	struct bus_memory_mapping_s *current = bus->mappings;
+
+	if (address % 4 || length % 4)
+	{
+		return BER_ALIGN;
+	}
 
 	while (current)
 	{
@@ -93,15 +104,106 @@ enum bus_error bus_memory_map(struct bus_s *bus, uintptr_t address, uintptr_t le
 
 enum bus_error bus_memory_unmap(struct bus_s *bus, uintptr_t address)
 {
-	return false;
+	/* to be implemented */
+
+	return BER_OTHER;
 }
 
-uint8_t bus_read_byte(uintptr_t address);
-uint16_t bus_read_word(uintptr_t address);
-uint32_t bus_read_dword(uintptr_t address);
+void bus_error_clear(struct bus_s *bus)
+{
+	bus->error = BER_SUCCESS;
+}
 
-void bus_write_byte(uintptr_t address, uint8_t data);
-void bus_write_word(uintptr_t address, uint16_t data);
-void bus_write_dword(uintptr_t address, uint32_t data);
+enum bus_error bus_error_state(struct bus_s *bus)
+{
+	return bus->error;
+}
+
+uint8_t bus_read_byte(struct bus_s *bus, uintptr_t address)
+{
+	struct bus_memory_mapping_s *mapping = bus_map_at(bus, address);
+
+	enum bus_error error = bus_address_check_in_map(bus, mapping, BPERM_READABLE, address, 1);
+
+	if (error != BER_SUCCESS)
+	{
+		bus->error = error;
+		return 0;
+	}
+
+	return ((uint8_t *)mapping->memory)[address - mapping->address];
+}
+
+uint16_t bus_read_word(struct bus_s *bus, uintptr_t address)
+{
+	struct bus_memory_mapping_s *mapping = bus_map_at(bus, address);
+
+	enum bus_error error = bus_address_check_in_map(bus, mapping, BPERM_READABLE, address, 2);
+
+	if (error != BER_SUCCESS)
+	{
+		bus->error = error;
+		return 0;
+	}
+
+	return *(uint16_t *)((uint8_t *)mapping->memory + (address - mapping->address));
+}
+
+uint32_t bus_read_dword(struct bus_s *bus, uintptr_t address)
+{
+	struct bus_memory_mapping_s *mapping = bus_map_at(bus, address);
+
+	enum bus_error error = bus_address_check_in_map(bus, mapping, BPERM_READABLE, address, 4);
+
+	if (error != BER_SUCCESS)
+	{
+		bus->error = error;
+		return 0;
+	}
+
+	return *(uint32_t *)((uint8_t *)mapping->memory + (address - mapping->address));
+}
+
+enum bus_error bus_write_byte(struct bus_s *bus, uintptr_t address, uint8_t data)
+{
+	struct bus_memory_mapping_s *mapping = bus_map_at(bus, address);
+
+	enum bus_error error = bus_address_check_in_map(bus, mapping, BPERM_WRITABLE, address, 1);
+
+	if (error != BER_SUCCESS)
+		return error;
+
+	((uint8_t *)mapping->memory)[address - mapping->address] = data;
+
+	return BER_SUCCESS;
+}
+
+enum bus_error bus_write_word(struct bus_s *bus, uintptr_t address, uint16_t data)
+{
+	struct bus_memory_mapping_s *mapping = bus_map_at(bus, address);
+
+	enum bus_error error = bus_address_check_in_map(bus, mapping, BPERM_WRITABLE, address, 2);
+
+	if (error != BER_SUCCESS)
+		return error;
+
+	*(uint16_t *)((uint8_t *)mapping->memory + (address - mapping->address)) = data;
+
+	return BER_SUCCESS;
+}
+
+enum bus_error bus_write_dword(struct bus_s *bus, uintptr_t address, uint32_t data)
+{
+	struct bus_memory_mapping_s *mapping = bus_map_at(bus, address);
+
+	enum bus_error error = bus_address_check_in_map(bus, mapping, BPERM_WRITABLE, address, 4);
+
+	if (error != BER_SUCCESS)
+		return error;
+
+	*(uint32_t *)((uint8_t *)mapping->memory + (address - mapping->address)) = data;
+
+	return BER_SUCCESS;
+}
 
 

@@ -21,17 +21,19 @@ struct vio_basic_interface_s
 	uint32_t registers[4];
 };
 
+struct vio_device_info_s
+{
+	uint32_t category;
+	uint32_t vendor;
+	uint32_t device;
+	uint32_t map_length;
+};
+
 struct vio_device_interface_s
 {
 	struct vio_basic_interface_s basic_interface;
 
-	struct
-	{
-		uint32_t category;
-		uint32_t vendor;
-		uint32_t device;
-		uint32_t map_length;
-	} device_info;
+	struct vio_device_info_s device_info;
 };
 
 struct vio_device_implementation_s
@@ -43,7 +45,6 @@ struct vio_device_implementation_s
 
 struct vio_device_s
 {
-
 	struct vio_s *vio;
 	struct vio_device_implementation_s handlers;
 
