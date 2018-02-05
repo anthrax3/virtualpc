@@ -7,6 +7,8 @@
  *  Virtual Input-Output
  */
 
+#define VIO_MAX_DEVICES 32
+
 enum vio_flags
 {
 	VIOF_READY = (1 << 0),
@@ -29,15 +31,10 @@ struct vio_device_info_s
 	uint32_t map_length;
 };
 
-struct vio_device_interface_s
-{
-	struct vio_basic_interface_s basic_interface;
-
-	struct vio_device_info_s device_info;
-};
-
 struct vio_device_implementation_s
 {
+	struct vio_device_info_s info;
+
 	void(*init)(struct vio_device_s *device);
 	void(*clock)(struct vio_device_s *device);
 	void(*destroy)(struct vio_device_s *device);
@@ -46,7 +43,7 @@ struct vio_device_implementation_s
 struct vio_device_s
 {
 	struct vio_s *vio;
-	struct vio_device_implementation_s handlers;
+	struct vio_device_implementation_s implementation;
 
 	struct
 	{
@@ -60,17 +57,28 @@ struct vio_device_s
 
 struct vio_memory_s
 {
-	struct vio_basic_interface_s interface;
-	struct vio_device_interface_s devices[32];
+	struct
+	{
+		struct vio_basic_interface_s interface;
+		struct vio_basic_interface_s device_interfaces[VIO_MAX_DEVICES];
+	} readwrite;
+
+	struct
+	{
+
+	} readonly;
+
+
 };
 
 struct vio_s
 {
 	struct pc_s *pc;
-	struct vio_device_s devices[32];
+	uint32_t next_device_id;
+	struct vio_device_s devices[VIO_MAX_DEVICES];
 	struct vio_memory_s memory;
 };
 
 void vio_init(struct vio_s *vio, struct pc_s *pc, uintptr_t address);
-uint32_t vio_add_device(struct vio_s *vio, struct vio_device_implementation_s handlers);
+uint32_t vio_add_device(struct vio_s *vio, struct vio_device_implementation_s implementation);
 void vio_clock(struct vio_s *vio);

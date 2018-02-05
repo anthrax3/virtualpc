@@ -18,14 +18,6 @@ struct term_mapped_memory_s
 
 void viod_term_init(struct vio_device_s *device)
 {
-	struct vio_device_info_s info = {
-		.category = VDC_OUTPUT,
-		.vendor = VDV_GENUINE_CAT,
-		.device = VD_GENUINE_CAT_OUTPUT_TERMINAL,
-		.map_length = sizeof(struct term_mapped_memory_s)
-	};
-
-	device->interface->device_info = info;
 }
 
 void viod_term_clock(struct vio_device_s *device)
@@ -55,5 +47,11 @@ void viod_term_destroy(struct vio_device_s *device)
 struct vio_device_implementation_s viod_term = {
 	.init = viod_term_init,
 	.clock = viod_term_clock,
-	.destroy = viod_term_destroy
+	.destroy = viod_term_destroy,
+	.info = (struct vio_device_info_s) {
+		.category = VDC_OUTPUT,
+		.vendor = VDV_GENUINE_CAT,
+		.device = VD_GENUINE_CAT_OUTPUT_TERMINAL,
+		.map_length = sizeof(struct term_mapped_memory_s)
+	}
 };
