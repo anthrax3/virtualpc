@@ -1,13 +1,13 @@
+v - variable size
 
-
-0 - 4 - dword - absolute: 100h
-1 - 4 - dword - &(*absolute): [100h]
-2 - 4 - dword - &(pc + offset:dword): (-100h)
-3 - 1 - byte - &register: ra
-4 - 1 - byte - &(*register): [ra]
-5 - 5 - byte + dword - &(*register + offset:dword): [ra + 4]
-6 - 4 - byte + byte + word - &(*register + *register *factor:word): [ra + rb * 2]
-7 - 0 - no operand
+0 - v - v - absolute: 100h - constant
+1 - 4 - dword - &(*absolute): [100h] - address
+2 - 4 - dword - &(pc + offset:dword): (-100h) - address
+3 - 1 - byte - &register: ra - register
+4 - 1 - byte - &(*register): [ra] - address
+5 - 5 - byte + dword - &(*register + offset:dword): [ra + 4] - address
+6 - 4 - byte + byte + word - &(*register + *register *factor:word): [ra + rb * 2] - address
+7 - 0 - no operand - none
 
 instruction =
 size:2, addressing: 6, instruction:size, address...

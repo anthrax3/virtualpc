@@ -8,17 +8,10 @@
 #include <stdio.h>
 
 /*
-0 - 4 - dword - &absolute: 100h
-1 - 4 - dword - &(*absolute): [100h]
-2 - 4 - dword - &(pc + offset:dword): (-100h)
-3 - 1 - byte - &register: ra
-4 - 1 - byte - &(*register): [ra]
-5 - 5 - byte + dword - &(*register + offset:dword): [ra + 4]
-6 - 4 - byte + byte + word - &(*register + *register *factor:word): [ra + rb * 2]
-7 - 0 - no operand
+    read /misc
  */
 
-static uint8_t cpu_addressing_offsets[] = { 4, 4, 4, 1, 1, 5, 4, 0 };
+static uint8_t cpu_addressing_offsets[] = { 0, 4, 4, 1, 1, 5, 4, 0 };
 
 void cpu_init(struct cpu_s *cpu, struct pc_s *pc)
 {
@@ -55,8 +48,8 @@ void cpu_step(struct cpu_s *cpu)
     cpu_fetch(cpu, &cpu->state.execution);
     cpu_decode(cpu, &cpu->state.execution);
 
-    if (cpu->state.execution.execute)
-        cpu->state.execution.execute(cpu, &cpu->state.execution);
+    if (cpu->state.execution.implementation)
+        cpu->state.execution.implementation(cpu, &cpu->state.execution);
     else
     {
         /* TODO error... */
@@ -82,8 +75,7 @@ void cpu_dump_information(struct cpu_s *cpu)
 
     printf("pc = %08x | ", cpu->state.regs.pc);
 
-    uint8_t length = cpu_instruction_length(cpu->state.execution.instruction[0]);
-    for (i = 0; i < length && i < 16; ++i)
+    for (i = 0; i < cpu->state.execution.instruction_length && i < 16; ++i)
     {
         printf("%02x ", cpu->state.execution.instruction[i]);
     }
@@ -110,41 +102,53 @@ bool cpu_flag_isset(struct cpu_s *in, enum cpu_flags flag)
     return !!(in->state.regs.flags & flag);
 }
 
-uint8_t cpu_instruction_length(uint8_t head)
-{
-    uint8_t size         = ((head & 0xc0) >> 6) & 0x3;
-    uint8_t addr1        = ((head & 0x38) >> 3) & 0x7;
-    uint8_t addr2        = (head & 0x07);
-    uint8_t final_length = 1;
-
-    if (size == 3)
-        return 0;
-
-    final_length += (1 << size);
-    final_length += cpu_addressing_offsets[addr1];
-    final_length += cpu_addressing_offsets[addr2];
-
-    return final_length;
-}
-
 void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
 {
     uint8_t head;
-    uint8_t length;
+    uint8_t length = 1;
 
     if (bus_read(&cpu->pc->bus, cpu->state.regs.pc, 1, &head) != BER_SUCCESS)
     {
         /* TODO ... */
     }
 
-    length = cpu_instruction_length(head);
+    uint8_t size         = ((head & 0xc0) >> 6) & 0x3;
 
-    /* Short instruction with no operands */
-    if (length == 0)
+    /* 6-bit instruction with no operands */
+    if (size == 3)
     {
         state->instruction[0] = head;
+        state->instruction_length = 1;
+        state->instruction_size = 3;
         cpu->state.regs.pc++;
         return;
+    }
+
+    uint8_t addr1        = ((head & 0x38) >> 3) & 0x7;
+    uint8_t addr2        = (head & 0x07);
+
+    length += (1 << size);
+
+    uint32_t first_byte;
+
+    if (bus_read(&cpu->pc->bus, cpu->state.regs.pc + 1, 1, &first_byte) != BER_SUCCESS)
+    {
+        /* TODO ... */
+    }
+
+    state->instruction_size = (first_byte & 0xc0) >> 6;
+
+    if (state->instruction_size != 3)
+    {
+        if (addr1 != 0)
+            length += cpu_addressing_offsets[addr1];
+        else
+            length += (1 << state->instruction_size);
+
+        if (addr2 != 0)
+            length += cpu_addressing_offsets[addr2];
+        else
+            length += (1 << state->instruction_size);
     }
 
     if (length > 16)
@@ -152,6 +156,8 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
         /* TODO */
         length = 16;
     }
+
+    state->instruction_length = length;
 
     bus_read(&cpu->pc->bus, cpu->state.regs.pc, length, state->instruction);
     cpu->state.regs.pc += length;
@@ -168,14 +174,7 @@ uint32_t *cpu_register(struct cpu_s *cpu, uint8_t name)
 }
 
 /*
-0 - 4 - dword - absolute: 100h
-1 - 4 - dword - &(*absolute): [100h]
-2 - 4 - dword - &(pc + offset:dword): (-100h)
-3 - 1 - byte - &register: ra
-4 - 1 - byte - &(*register): [ra]
-5 - 5 - byte + dword - &(*register + offset:dword): [ra + 4]
-6 - 4 - byte + byte + word - &(*register + *register *factor:word): [ra + rb * 2]
-7 - 0 - no operand
+    read /misc
  */
 struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode, uint8_t *data)
 {
@@ -255,8 +254,7 @@ void cpu_decode(struct cpu_s *cpu, struct cpu_execution_state *state)
     {
         printf("pc = %08x | ", cpu->state.regs.pc);
         uint8_t i = 0;
-        uint8_t l = cpu_instruction_length(cpu->state.execution.instruction[0]);
-        for (; i < l && i < 16; ++i)
+        for (; i < cpu->state.execution.instruction_length && i < 16; ++i)
         {
             printf("%02x ", cpu->state.execution.instruction[i]);
         }
@@ -283,5 +281,5 @@ void cpu_decode(struct cpu_s *cpu, struct cpu_execution_state *state)
         }
     }
 
-    state->execute = cpu->implementation(size, *(uint32_t *)(&cpu->state.execution.instruction[1]));
+    state->implementation = cpu->implementation(size, *(uint32_t *)(&cpu->state.execution.instruction[1]));
 }

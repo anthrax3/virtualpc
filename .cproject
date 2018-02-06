@@ -85,7 +85,9 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="iset/cat|include|src/dev|cat|vio|src/basm|src/iz|is|src/cpu|src/iset/cat|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="pc|iset/cat|include|src/dev|cat|vio|src/basm|src/iz|is|src/cpu|src/iset/cat|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/include"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
