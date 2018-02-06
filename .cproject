@@ -41,15 +41,6 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="iset/cat|include|src/dev|cat|vio|src/basm|src/iz|is|src/cpu|src/iset/cat|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="iset/cat|cpu|dev|vio" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
-						<entry excluding="cat" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include/cpu"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include/cpu/cat"/>
-						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include/vio"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include/vio/dev"/>
-						<entry excluding="cat" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/cpu"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/cpu/cat"/>
-						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/vio"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/vio/dev"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
