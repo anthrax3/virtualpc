@@ -54,7 +54,13 @@ void cpu_step(struct cpu_s *cpu)
 
     cpu_fetch(cpu, &cpu->state.execution);
     cpu_decode(cpu, &cpu->state.execution);
-    cpu->state.execution.execute(cpu, &cpu->state.execution);
+
+    if (cpu->state.execution.execute)
+        cpu->state.execution.execute(cpu, &cpu->state.execution);
+    else
+    {
+        /* TODO error... */
+    }
 }
 
 void cpu_dump_information(struct cpu_s *cpu)
@@ -278,6 +284,4 @@ void cpu_decode(struct cpu_s *cpu, struct cpu_execution_state *state)
     }
 
     state->execute = cpu->implementation(size, *(uint32_t *)(&cpu->state.execution.instruction[1]));
-
-
 }

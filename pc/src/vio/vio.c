@@ -68,7 +68,8 @@ void vio_clock(struct vio_s *vio)
 
     for (; i < VIO_MAX_DEVICES; ++i)
     {
-        vio->devices[i].implementation.clock(&vio->devices[i]);
+        if (vio->devices[i].state.id)
+            vio->devices[i].implementation.clock(&vio->devices[i]);
     }
 }
 
