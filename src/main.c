@@ -45,7 +45,7 @@ int main(int argc, const char **argv)
 
     test_bus(&pc);
 
-    //cpu_start(&pc.cpu);
+    /*cpu_start(&pc.cpu);*/
     printf("CPU done\n");
     return 0;
 }

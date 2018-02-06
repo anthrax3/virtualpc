@@ -11,8 +11,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// Exposed functions
-
 void viod_term_init(struct vio_internal_device_s *device)
 {
 }
@@ -23,7 +21,7 @@ void viod_term_clock(struct vio_internal_device_s *device)
     {
     case VDCS_TERM_PRINT:
     {
-        // Length of string is stored in the first register
+        /* Length of string is stored in the first register */
         uint32_t length = device->interface->registers[1];
         uint32_t i      = 0;
 
@@ -31,7 +29,7 @@ void viod_term_clock(struct vio_internal_device_s *device)
         {
             putc(device->interface->data[i], stdout);
         }
-        // Reset the command
+        /* Reset the command */
         device->interface->registers[0] = 0;
     }
     }
