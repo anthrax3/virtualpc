@@ -26,6 +26,9 @@ void cpu_reset(struct cpu_s *cpu)
 
 void cpu_start(struct cpu_s *cpu)
 {
+    if (cpu->implementation == NULL)
+        pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_NO_INSTRUCTION_SET);
+
     while (!cpu->state.halt)
     {
         cpu_step(cpu);
@@ -52,7 +55,7 @@ void cpu_step(struct cpu_s *cpu)
         cpu->state.execution.implementation(&cpu->state.execution);
     else
     {
-        /* TODO error... */
+        pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_UNKNOWN_INSTRUCTION);
     }
 }
 
@@ -109,9 +112,11 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
     uint8_t head;
     uint8_t length = 1;
 
-    if (bus_read(&cpu->pc->bus, cpu->state.regs.pc, 1, &head) != BER_SUCCESS)
+    enum bus_error error;
+
+    if ((error = bus_read(&cpu->pc->bus, cpu->state.regs.pc, 1, &head)) != BER_SUCCESS)
     {
-        /* TODO ... */
+        pc_raise_exception(cpu->pc, PCEXCAT_BUS, error);
     }
 
     uint8_t size = ((head & 0xc0) >> 6) & 0x3;
@@ -133,10 +138,10 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
 
     uint32_t first_byte;
 
-    if (bus_read(&cpu->pc->bus, cpu->state.regs.pc + 1, 1, &first_byte) !=
+    if ((error = bus_read(&cpu->pc->bus, cpu->state.regs.pc + 1, 1, &first_byte)) !=
         BER_SUCCESS)
     {
-        /* TODO ... */
+        pc_raise_exception(cpu->pc, PCEXCAT_BUS, error);
     }
 
     state->instruction_size = (first_byte & 0xc0) >> 6;
@@ -156,7 +161,7 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
 
     if (length > 16)
     {
-        /* TODO */
+        pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_INSTRUCTION_TOO_LONG);
         length = 16;
     }
 
@@ -210,7 +215,7 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
             result.value = *reg;
         else
         {
-            /* TODO error */
+            pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_UNKNOWN_REGISTER);
             result.value = 0xFFFFFFFF;
         }
         break;
@@ -223,7 +228,7 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
             result.value = *reg + *(uint32_t *) (&data[1]);
         else
         {
-            /* TODO error */
+            pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_UNKNOWN_REGISTER);
             result.value = 0xFFFFFFFF;
         }
         break;
@@ -237,7 +242,7 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
             result.value = *regA + *regB * (*(uint16_t *) (&data[2]));
         else
         {
-            /* TODO error */
+            pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_UNKNOWN_REGISTER);
             result.value = 0xFFFFFFFF;
         }
         break;
@@ -245,8 +250,9 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
     case 7:
         break;
     default:
+        /* why, cpu? */
+        pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_ILLEGAL_STATE);
         break;
-        /* TODO error */
     }
 
     return result;

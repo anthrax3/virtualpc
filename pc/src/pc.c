@@ -14,4 +14,6 @@ void pc_init(struct pc_s *pc)
 void pc_raise_exception(struct pc_s *pc, enum pc_exception_category category,
                         int data)
 {
+    printf("exception raised: %d %d\n", category, data);
+    pc->cpu.state.halt = true;
 }

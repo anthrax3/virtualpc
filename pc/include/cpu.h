@@ -17,6 +17,16 @@ enum cpu_flags
     CF_DEBUGF,
 };
 
+enum cpu_errors
+{
+    CPU_ERROR_UNKNOWN_INSTRUCTION,
+    CPU_ERROR_UNKNOWN_REGISTER,
+    CPU_ERROR_INSTRUCTION_TOO_LONG,
+    CPU_ERROR_ILLEGAL_STATE,
+    CPU_ERROR_NO_INSTRUCTION_SET,
+    CPU_ERROR_COUNT
+};
+
 struct cpu_registers_s
 {
     uint32_t rx[8]; /* r[abcdefgh] */

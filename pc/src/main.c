@@ -9,6 +9,7 @@
 #include "cpu.h"
 #include "vio/vio.h"
 #include "vio/dev/term.h"
+#include "cpu/cat/cat.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -44,11 +45,12 @@ int main(int argc, const char **argv)
     pc_init(&pc);
     vio_add_device(&pc.vio, viod_term);
 
+    pc.cpu.implementation = cat_cpu_instruction_lookup;
     cpu_flag_set(&pc.cpu, CF_DEBUGF);
 
-    test_bus(&pc);
+    /*test_bus(&pc);*/
 
-    /*cpu_start(&pc.cpu);*/
+    cpu_start(&pc.cpu);
     printf("CPU done\n");
     return 0;
 }
