@@ -248,6 +248,8 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
         break;
     }
     case 7:
+        result.type = CPU_OPT_NONE;
+        result.value = 0x0;
         break;
     default:
         /* why, cpu? */

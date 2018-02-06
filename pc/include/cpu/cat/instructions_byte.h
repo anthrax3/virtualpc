@@ -12,6 +12,7 @@ enum cpu_cat_instruction_byte
 {
     /* Basic operations */
     CPU_CAT_8_MOVE,
+    CPU_CAT_8_LOAD_EFFECTIVE_ADDRESS,
     CPU_CAT_8_EXCHANGE,
     /* Logic? */
     CPU_CAT_8_COMPARE,
@@ -44,6 +45,7 @@ enum cpu_cat_instruction_byte
 };
 
 void cpu_cat_8_move(struct cpu_execution_state *state);
+void cpu_cat_8_load_effective_address(struct cpu_execution_state *state);
 void cpu_cat_8_exchange(struct cpu_execution_state *state);
 void cpu_cat_8_compare(struct cpu_execution_state *state);
 void cpu_cat_8_add(struct cpu_execution_state *state);

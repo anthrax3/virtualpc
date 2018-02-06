@@ -24,6 +24,8 @@ enum cpu_errors
     CPU_ERROR_INSTRUCTION_TOO_LONG,
     CPU_ERROR_ILLEGAL_STATE,
     CPU_ERROR_NO_INSTRUCTION_SET,
+    CPU_ERROR_ILLEGAL_OPERAND,
+    CPU_ERROR_DIVIDE_BY_ZERO,
     CPU_ERROR_COUNT
 };
 
@@ -52,7 +54,9 @@ struct cpu_operand_s
 struct cpu_execution_state
 {
     uint8_t instruction[16];
+    /* LENGTH (in bytes) */
     uint8_t instruction_length;
+    /* SIZE (byte, word, dword..) */
     uint8_t instruction_size;
     cpu_instruction implementation;
     struct cpu_operand_s operands[2];

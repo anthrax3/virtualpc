@@ -3,6 +3,7 @@ src/mem.c
 src/cpu/cat/cat.c
 src/cpu/cat/instructions_byte.c
 src/cpu/cat/instructions_micro.c
+src/cpu/operand.c
 src/cpu.c
 src/vio/vio.c
 src/vio/dev/term.c

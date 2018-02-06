@@ -61,6 +61,9 @@ cpu_instruction cat_cpu_instruction_lookup(uint8_t size, uint32_t instruction)
     if (size > 3)
         return NULL;
 
+    if (size == 3)
+        instruction &= 0x3f;
+
     if (instruction >= cat_instruction_count[size])
         return NULL;
 
