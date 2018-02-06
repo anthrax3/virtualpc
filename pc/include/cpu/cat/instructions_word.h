@@ -6,3 +6,9 @@
  */
 
 #pragma once
+
+/* 16-bit instructions */
+enum cpu_cat_instruction_word
+{
+    CPU_CAT_16_COUNT
+};

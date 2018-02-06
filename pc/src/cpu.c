@@ -49,7 +49,7 @@ void cpu_step(struct cpu_s *cpu)
     cpu_decode(cpu, &cpu->state.execution);
 
     if (cpu->state.execution.implementation)
-        cpu->state.execution.implementation(cpu, &cpu->state.execution);
+        cpu->state.execution.implementation(&cpu->state.execution);
     else
     {
         /* TODO error... */
@@ -289,4 +289,5 @@ void cpu_decode(struct cpu_s *cpu, struct cpu_execution_state *state)
 
     state->implementation = cpu->implementation(
         size, *(uint32_t *) (&cpu->state.execution.instruction[1]));
+    state->cpu = cpu;
 }
