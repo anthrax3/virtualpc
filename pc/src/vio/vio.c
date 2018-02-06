@@ -25,7 +25,9 @@ void vio_init(struct vio_s *vio, struct pc_s *pc, uint32_t address)
     vio->pc             = pc;
     vio->next_device_id = 1;
 
-    enum bus_error error = bus_memory_map(&pc->bus, address, sizeof(struct vio_memory_s), vio, (bus_function)vio_bus_read, (bus_function)vio_bus_write);
+    enum bus_error error = bus_memory_map(
+        &pc->bus, address, sizeof(struct vio_memory_s), vio,
+        (bus_function) vio_bus_read, (bus_function) vio_bus_write);
     printf("Virtual I/O: bus status %d\n", error);
 }
 

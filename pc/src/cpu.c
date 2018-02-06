@@ -81,8 +81,10 @@ void cpu_dump_information(struct cpu_s *cpu)
     }
     printf("\n");
     printf("operands:\n");
-    printf("\t1: as %d: %08x\n", cpu->state.execution.operands[0].type, cpu->state.execution.operands[0].value);
-    printf("\t2: as %d: %08x\n", cpu->state.execution.operands[1].type, cpu->state.execution.operands[1].value);
+    printf("\t1: as %d: %08x\n", cpu->state.execution.operands[0].type,
+           cpu->state.execution.operands[0].value);
+    printf("\t2: as %d: %08x\n", cpu->state.execution.operands[1].type,
+           cpu->state.execution.operands[1].value);
 
     printf("=-= END OF CPU INFORMATION =-=\n");
 }
@@ -112,26 +114,27 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
         /* TODO ... */
     }
 
-    uint8_t size         = ((head & 0xc0) >> 6) & 0x3;
+    uint8_t size = ((head & 0xc0) >> 6) & 0x3;
 
     /* 6-bit instruction with no operands */
     if (size == 3)
     {
-        state->instruction[0] = head;
+        state->instruction[0]     = head;
         state->instruction_length = 1;
-        state->instruction_size = 3;
+        state->instruction_size   = 3;
         cpu->state.regs.pc++;
         return;
     }
 
-    uint8_t addr1        = ((head & 0x38) >> 3) & 0x7;
-    uint8_t addr2        = (head & 0x07);
+    uint8_t addr1 = ((head & 0x38) >> 3) & 0x7;
+    uint8_t addr2 = (head & 0x07);
 
     length += (1 << size);
 
     uint32_t first_byte;
 
-    if (bus_read(&cpu->pc->bus, cpu->state.regs.pc + 1, 1, &first_byte) != BER_SUCCESS)
+    if (bus_read(&cpu->pc->bus, cpu->state.regs.pc + 1, 1, &first_byte) !=
+        BER_SUCCESS)
     {
         /* TODO ... */
     }
@@ -176,31 +179,32 @@ uint32_t *cpu_register(struct cpu_s *cpu, uint8_t name)
 /*
     read /misc
  */
-struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode, uint8_t *data)
+struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
+                                        uint8_t *data)
 {
     struct cpu_operand_s result;
 
     switch (mode)
     {
     case 0:
-        result.type = CPU_OPT_CONSTANT;
-        result.value = ((uint32_t *)data)[0];
+        result.type  = CPU_OPT_CONSTANT;
+        result.value = ((uint32_t *) data)[0];
         break;
     case 1:
-        result.type = CPU_OPT_ADDRESS;
-        result.value = ((uint32_t *)data)[0];
+        result.type  = CPU_OPT_ADDRESS;
+        result.value = ((uint32_t *) data)[0];
         break;
     case 2:
-        result.type = CPU_OPT_ADDRESS;
-        result.value = cpu->state.regs.pc + ((uint32_t *)data)[0];
+        result.type  = CPU_OPT_ADDRESS;
+        result.value = cpu->state.regs.pc + ((uint32_t *) data)[0];
         break;
     case 3:
-        result.type = CPU_OPT_REGISTER;
+        result.type  = CPU_OPT_REGISTER;
         result.value = data[0];
         break;
     case 4:
     {
-        result.type = CPU_OPT_ADDRESS;
+        result.type   = CPU_OPT_ADDRESS;
         uint32_t *reg = cpu_register(cpu, data[0]);
         if (reg)
             result.value = *reg;
@@ -213,10 +217,10 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode, uint8_t
     }
     case 5:
     {
-        result.type = CPU_OPT_ADDRESS;
+        result.type   = CPU_OPT_ADDRESS;
         uint32_t *reg = cpu_register(cpu, data[0]);
         if (reg)
-            result.value = *reg + *(uint32_t *)(&data[1]);
+            result.value = *reg + *(uint32_t *) (&data[1]);
         else
         {
             /* TODO error */
@@ -226,11 +230,11 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode, uint8_t
     }
     case 6:
     {
-        result.type = CPU_OPT_ADDRESS;
+        result.type    = CPU_OPT_ADDRESS;
         uint32_t *regA = cpu_register(cpu, data[0]);
         uint32_t *regB = cpu_register(cpu, data[1]);
         if (regA && regB)
-            result.value = *regA + *regB * (*(uint16_t *)(&data[2]));
+            result.value = *regA + *regB * (*(uint16_t *) (&data[2]));
         else
         {
             /* TODO error */
@@ -263,9 +267,9 @@ void cpu_decode(struct cpu_s *cpu, struct cpu_execution_state *state)
 
     uint8_t head = cpu->state.execution.instruction[0];
 
-    uint8_t size         = ((head & 0xc0) >> 6) & 0x3;
-    uint8_t addr1        = ((head & 0x38) >> 3) & 0x7;
-    uint8_t addr2        = (head & 0x07);
+    uint8_t size  = ((head & 0xc0) >> 6) & 0x3;
+    uint8_t addr1 = ((head & 0x38) >> 3) & 0x7;
+    uint8_t addr2 = (head & 0x07);
 
     uint8_t i = 2;
 
@@ -273,13 +277,16 @@ void cpu_decode(struct cpu_s *cpu, struct cpu_execution_state *state)
     {
         if (addr1 != 7)
         {
-            state->operands[0] = cpu_decode_operand(cpu, addr1, cpu->state.execution.instruction + i);
+            state->operands[0] = cpu_decode_operand(
+                cpu, addr1, cpu->state.execution.instruction + i);
             i += cpu_addressing_offsets[addr1];
 
             if (addr2 != 7)
-                state->operands[1] = cpu_decode_operand(cpu, addr2, cpu->state.execution.instruction + i);
+                state->operands[1] = cpu_decode_operand(
+                    cpu, addr2, cpu->state.execution.instruction + i);
         }
     }
 
-    state->implementation = cpu->implementation(size, *(uint32_t *)(&cpu->state.execution.instruction[1]));
+    state->implementation = cpu->implementation(
+        size, *(uint32_t *) (&cpu->state.execution.instruction[1]));
 }

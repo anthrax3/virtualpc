@@ -25,13 +25,16 @@ void test_bus(struct pc_s *pc)
     test_struct.data[2] = 789;
     test_struct.data[3] = 321;
 
-    printf("test: bus write struct: %d\n", bus_write(&pc->bus, 0x100000, sizeof(test_struct), &test_struct));
+    printf("test: bus write struct: %d\n",
+           bus_write(&pc->bus, 0x100000, sizeof(test_struct), &test_struct));
 
     memset(&test_struct, 0, sizeof(test_struct));
 
-    printf("test: bus read struct: %d\n", bus_read(&pc->bus, 0x100000, sizeof(test_struct), &test_struct));
+    printf("test: bus read struct: %d\n",
+           bus_read(&pc->bus, 0x100000, sizeof(test_struct), &test_struct));
 
-    printf("test: %u %u %u %u\n", test_struct.data[0], test_struct.data[1], test_struct.data[2], test_struct.data[3]);
+    printf("test: %u %u %u %u\n", test_struct.data[0], test_struct.data[1],
+           test_struct.data[2], test_struct.data[3]);
 }
 
 int main(int argc, const char **argv)

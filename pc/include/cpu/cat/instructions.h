@@ -30,4 +30,3 @@ enum cpu_cat_instruction_dword
 {
     CPU_CAT_32_COUNT
 };
-

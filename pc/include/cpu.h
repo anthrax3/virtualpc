@@ -6,8 +6,10 @@
 struct cpu_s;
 struct cpu_execution_state;
 
-typedef void(*cpu_instruction)(struct cpu_s *cpu, struct cpu_execution_state *state);
-typedef cpu_instruction(*cpu_instruction_lookup)(uint8_t size, uint32_t instruction);
+typedef void (*cpu_instruction)(struct cpu_s *cpu,
+                                struct cpu_execution_state *state);
+typedef cpu_instruction (*cpu_instruction_lookup)(uint8_t size,
+                                                  uint32_t instruction);
 
 enum cpu_flags
 {

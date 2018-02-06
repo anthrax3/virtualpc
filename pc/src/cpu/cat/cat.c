@@ -14,8 +14,8 @@
 #include <stdlib.h>
 
 cpu_instruction cat_instructions_micro[] = { NULL };
-cpu_instruction cat_instructions_byte[] = { NULL };
-cpu_instruction cat_instructions_word[] = { NULL };
+cpu_instruction cat_instructions_byte[]  = { NULL };
+cpu_instruction cat_instructions_word[]  = { NULL };
 cpu_instruction cat_instructions_dword[] = { NULL };
 
 cpu_instruction cat_cpu_instruction_lookup(uint8_t size, uint32_t instruction)

@@ -47,7 +47,8 @@ enum bus_error bus_address_check(struct bus_s *bus,
         return BER_EXIST;
 
     /* The requested region must be located completely inside the mapping */
-    uint32_t map_remaining_length = mapping->length - (address - mapping->address);
+    uint32_t map_remaining_length =
+        mapping->length - (address - mapping->address);
 
     if (length > map_remaining_length)
         return BER_OVERLAP;
@@ -104,7 +105,8 @@ enum bus_error bus_memory_map(struct bus_s *bus, uint32_t address,
     mapping->read    = read;
     mapping->write   = write;
 
-    printf("Bus: mapped region %08x - %08x\n", mapping->address, mapping->address + mapping->length);
+    printf("Bus: mapped region %08x - %08x\n", mapping->address,
+           mapping->address + mapping->length);
 
     return BER_SUCCESS;
 }

@@ -28,7 +28,9 @@ void memory_free(struct memory_s *in)
 
 void memory_map(struct memory_s *memory, struct bus_s *bus, uint32_t address)
 {
-    enum bus_error error = bus_memory_map(bus, address, memory->size, memory, (bus_function)mem_bus_read, (bus_function)mem_bus_write);
+    enum bus_error error = bus_memory_map(bus, address, memory->size, memory,
+                                          (bus_function) mem_bus_read,
+                                          (bus_function) mem_bus_write);
 
     printf("Memory (%08x): bus status: %d\n", memory->size, error);
 }
