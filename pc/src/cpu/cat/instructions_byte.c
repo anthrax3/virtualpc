@@ -91,53 +91,85 @@ void cpu_cat_8_decrement(struct cpu_execution_state *state)
 }
 void cpu_cat_8_jump(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_READABLE(0), CPU_ERROR_ILLEGAL_OPERAND);
 
+    state->cpu->state.regs.pc = operand_read(state, 0);
 }
 void cpu_cat_8_jump_if_equal(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_READABLE(0), CPU_ERROR_ILLEGAL_OPERAND);
 
+    if (state->cpu->state.regs.flags.zero)
+        state->cpu->state.regs.pc = operand_read(state, 0);
 }
 void cpu_cat_8_jump_if_not_equal(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_READABLE(0), CPU_ERROR_ILLEGAL_OPERAND);
 
+    if (!state->cpu->state.regs.flags.zero)
+        state->cpu->state.regs.pc = operand_read(state, 0);
 }
 void cpu_cat_8_jump_if_greater(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_READABLE(0), CPU_ERROR_ILLEGAL_OPERAND);
 
+    if (!state->cpu->state.regs.flags.zero && (state->cpu->state.regs.flags.sign == state->cpu->state.regs.flags.overflow))
+        state->cpu->state.regs.pc = operand_read(state, 0);
 }
 void cpu_cat_8_jump_if_greater_or_equal(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_READABLE(0), CPU_ERROR_ILLEGAL_OPERAND);
 
+    if (state->cpu->state.regs.flags.zero || (state->cpu->state.regs.flags.sign == state->cpu->state.regs.flags.overflow))
+        state->cpu->state.regs.pc = operand_read(state, 0);
 }
 void cpu_cat_8_jump_if_less(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_READABLE(0), CPU_ERROR_ILLEGAL_OPERAND);
 
+    if (!state->cpu->state.regs.flags.zero && (state->cpu->state.regs.flags.sign ^ state->cpu->state.regs.flags.overflow))
+        state->cpu->state.regs.pc = operand_read(state, 0);
 }
 void cpu_cat_8_jump_if_less_or_equal(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_READABLE(0), CPU_ERROR_ILLEGAL_OPERAND);
 
+    if (state->cpu->state.regs.flags.zero || (state->cpu->state.regs.flags.sign ^ state->cpu->state.regs.flags.overflow))
+        state->cpu->state.regs.pc = operand_read(state, 0);
 }
 void cpu_cat_8_not(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_WRITABLE(0), CPU_ERROR_ILLEGAL_OPERAND);
 
+    operand_write(state, 0, ~operand_read(state, 0));
 }
 void cpu_cat_8_and(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_WRITABLE(0) && OPERAND_IS_READABLE(1), CPU_ERROR_ILLEGAL_OPERAND);
 
+    operand_write(state, 0, operand_read(state, 0) & operand_read(state, 1));
 }
 void cpu_cat_8_or(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_WRITABLE(0) && OPERAND_IS_READABLE(1), CPU_ERROR_ILLEGAL_OPERAND);
 
+    operand_write(state, 0, operand_read(state, 0) | operand_read(state, 1));
 }
 void cpu_cat_8_xor(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_WRITABLE(0) && OPERAND_IS_READABLE(1), CPU_ERROR_ILLEGAL_OPERAND);
 
+    operand_write(state, 0, operand_read(state, 0) ^ operand_read(state, 1));
 }
 void cpu_cat_8_shl(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_WRITABLE(0) && OPERAND_IS_READABLE(1), CPU_ERROR_ILLEGAL_OPERAND);
 
+    operand_write(state, 0, operand_read(state, 0) << operand_read(state, 1));
 }
 void cpu_cat_8_shr(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_WRITABLE(0) && OPERAND_IS_READABLE(1), CPU_ERROR_ILLEGAL_OPERAND);
 
+    operand_write(state, 0, operand_read(state, 0) >> operand_read(state, 1));
 }

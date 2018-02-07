@@ -46,7 +46,7 @@ int main(int argc, const char **argv)
     vio_add_device(&pc.vio, viod_term);
 
     pc.cpu.implementation = cat_cpu_instruction_lookup;
-    cpu_flag_set(&pc.cpu, CF_DEBUGF);
+    pc.cpu.state.regs.flags.debug = 1;
 
     /*test_bus(&pc);*/
 

@@ -10,11 +10,17 @@ typedef void (*cpu_instruction)(struct cpu_execution_state *state);
 typedef cpu_instruction (*cpu_instruction_lookup)(uint8_t size,
                                                   uint32_t instruction);
 
-enum cpu_flags
+union cpu_flags_s
 {
-    CF_ZF,
-    CF_JF,
-    CF_DEBUGF,
+    struct
+    {
+        bool carry : 1;
+        bool zero : 1;
+        bool sign : 1;
+        bool overflow : 1;
+        bool debug : 1;
+    };
+    uint32_t flags;
 };
 
 enum cpu_errors
@@ -34,7 +40,7 @@ struct cpu_registers_s
     uint32_t rx[8]; /* r[abcdefgh] */
     uint32_t pc;
     uint32_t sp;
-    uint32_t flags;
+    union cpu_flags_s flags;
 };
 
 enum cpu_operand_type
@@ -86,12 +92,6 @@ void cpu_reset(struct cpu_s *cpu);
 void cpu_step(struct cpu_s *cpu);
 
 void cpu_dump_information(struct cpu_s *cpu);
-
-void cpu_flag_set(struct cpu_s *cpu, enum cpu_flags flag);
-
-void cpu_flag_unset(struct cpu_s *cpu, enum cpu_flags flag);
-
-bool cpu_flag_isset(struct cpu_s *cpu, enum cpu_flags flag);
 
 uint32_t *cpu_register(struct cpu_s *cpu, uint8_t name);
 

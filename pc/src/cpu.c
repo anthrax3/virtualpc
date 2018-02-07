@@ -32,14 +32,6 @@ void cpu_start(struct cpu_s *cpu)
     while (!cpu->state.halt)
     {
         cpu_step(cpu);
-        if (cpu->state.regs.flags & CF_JF)
-        {
-            cpu->state.regs.flags &= ~CF_JF;
-        }
-        else
-        {
-            ++cpu->state.regs.pc;
-        }
     }
 }
 
@@ -72,7 +64,7 @@ void cpu_dump_information(struct cpu_s *cpu)
     printf("Special Registers:\n");
     printf("\t$pc = 0x%08x\n", cpu->state.regs.pc);
     printf("\t$sp = 0x%08x\n", cpu->state.regs.sp);
-    printf("\t$flags = 0x%08x\n", cpu->state.regs.flags);
+    printf("\t$flags = 0x%08x\n", cpu->state.regs.flags.flags);
 
     printf("Instruction cache:\n");
 
@@ -90,21 +82,6 @@ void cpu_dump_information(struct cpu_s *cpu)
            cpu->state.execution.operands[1].value);
 
     printf("=-= END OF CPU INFORMATION =-=\n");
-}
-
-void cpu_flag_set(struct cpu_s *in, enum cpu_flags flag)
-{
-    in->state.regs.flags |= flag;
-}
-
-void cpu_flag_unset(struct cpu_s *in, enum cpu_flags flag)
-{
-    in->state.regs.flags &= ~flag;
-}
-
-bool cpu_flag_isset(struct cpu_s *in, enum cpu_flags flag)
-{
-    return !!(in->state.regs.flags & flag);
 }
 
 void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
@@ -262,7 +239,7 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
 
 void cpu_decode(struct cpu_s *cpu, struct cpu_execution_state *state)
 {
-    if (cpu_flag_isset(cpu, CF_DEBUGF))
+    if (cpu->state.regs.flags.debug)
     {
         printf("pc = %08x | ", cpu->state.regs.pc);
         uint8_t i = 0;
