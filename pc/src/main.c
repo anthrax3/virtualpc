@@ -50,6 +50,53 @@ int main(int argc, const char **argv)
 
     /*test_bus(&pc);*/
 
+    /* TODO this is a test!
+     * A simple program that prints the line from 100100h to printer repeatedly, a single character at a time
+     *
+     * Assembly pseudocode:
+     *
+     *  xor ra, ra                  ; reset ra
+     * loop:
+     *  cmp [60h], 0                ; vio[0].r0: is device ready?
+     *  jnz loop                    ; loop until terminal is ready
+     *  mov [80h], [ra + 100100h]   ; vio[0].data[0]: set the message (single character)
+     *  mov [64h], 1                ; vio[0].r1: length of message = 1
+     *  mov [60h], 1                ; vio[0].r0: VDCS_TERM_PRINT
+     *                              ; This actually sends the command to terminal to print the message. r0 is then reset by the device.
+     *  cmp [ra + 100100h], 0       ; if end of string is reached (null character)
+     *  je ireset                   ; jump to iterator reset
+     *  inc ra                      ; iterator++
+     *  jmp loop                    ; go back to loop
+     * ireset:
+     *  xor ra, ra                  ; ra = 0
+     *  jmp loop
+     *
+     * C pseudocode:
+     *
+     *  uint32_t *terminal_registers = 0x60;
+     *  uint8_t  *terminal_data = 0x80;
+     *  uint32_t *message = 0x100100;
+     *
+     *  uint32_t iterator; // Stored in RA
+     *
+     *  while (true)
+     *  {
+     *      while (*terminal_registers[0]); // Locking loop
+     *      terminal_data[0] = message[iterator];
+     *      *terminal_registers[1] = 1;
+     *      *terminal_registers[0] = VDCS_TERM_PRINT;
+     *      if (message[iterator] == 0)
+     *          iterator = 0;
+     *  }
+     *
+     *  */
+    uint8_t program[] = {
+
+    };
+
+    bus_write(&pc.bus, 0x100000, sizeof(program), program);
+    pc.cpu.state.regs.pc = 0x100000;
+
     cpu_start(&pc.cpu);
     printf("CPU done\n");
     return 0;

@@ -9,6 +9,22 @@ struct cpu_execution_state;
 typedef void (*cpu_instruction)(struct cpu_execution_state *state);
 typedef cpu_instruction (*cpu_instruction_lookup)(uint8_t size,
                                                   uint32_t instruction);
+#define CPU_INSTRUCTION_LENGTH_BYTE 0x00
+#define CPU_INSTRUCTION_LENGTH_WORD 0x40
+#define CPU_INSTRUCTION_LENGTH_DWORD 0x80
+#define CPU_INSTRUCTION_LENGTH_MICRO 0xC0
+
+enum cpu_operand_mode
+{
+    CPU_OPERAND_MODE_IMMEDIATE,
+    CPU_OPERAND_MODE_ADDRESS,
+    CPU_OPERAND_MODE_OFFSET,
+    CPU_OPERAND_MODE_REGISTER,
+    CPU_OPERAND_MODE_REGISTER_INDIRECT,
+    CPU_OPERAND_MODE_REGISTER_INDIRECT_WITH_OFFSET,
+    CPU_OPERAND_MODE_REGISTER_INDIRECT_WITH_FACTOR,
+    CPU_OPERAND_MODE_NONE
+};
 
 union cpu_flags_s
 {
