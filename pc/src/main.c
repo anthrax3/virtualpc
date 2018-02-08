@@ -14,6 +14,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#define INSTR_MAKE_HEAD(size, op1, op2) \
+    CPU_INSTRUCTION_LENGTH_##size | (CPU_OPERAND_MODE_##op1 << 3) | CPU_OPERAND_MODE_##op2
+
 void test_bus(struct pc_s *pc)
 {
     struct
@@ -89,8 +92,29 @@ int main(int argc, const char **argv)
      *          iterator = 0;
      *  }
      *
+     * WTFCAT assembly (closer to bytecode)
+     *
+     *  xor.dw reg/reg 0, 0
+     *
+     *  cmp.dw adr/cst 60, 0
+     *  jnz.dw adr/--- 100004
+     *  mov.dw adr/rso 80, 0, 100100
+     *  mov.dw adr/cst 64, 1
+     *  mov.dw adr/cst 60, 1
+     *  cmp.dw rso/cst ra, 100100, 0
+     *  je.dw  off/--- 9
+     *  inc.dw reg/--- 0
+     *  jmp.dw adr/--- 100004
+     *
+     *  xor.dw reg/reg 0, 0
+     *  jmp.dw adr/--- 100004
+     *
      *  */
     uint8_t program[] = {
+            INSTR_MAKE_HEAD(BYTE, REGISTER, REGISTER), CPU_CAT_8_XOR, 0x00, 0x00,
+            INSTR_MAKE_HEAD(BYTE, ADDRESS, IMMEDIATE), CPU_CAT_8_COMPARE, /* LSB DWORD 00000060 = 60 00 00 00 */ 0x60, 0x00, 0x00, 0x00, /* RA */ 0x00,
+            INSTR_MAKE_HEAD(BYTE, ADDRESS, NONE), CPU_CAT_8_JUMP_IF_NOT_EQUAL, /* LSB DWORD 00100004 = 04 00 10 00 */ 0x04, 0x00, 0x10, 0x00,
+            INSTR_MAKE_HEAD(BYTE, ADDRESS, REGISTER_INDIRECT_WITH_OFFSET), CPU_CAT_8_MOVE,
 
     };
 
