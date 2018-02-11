@@ -11,8 +11,6 @@ src/main.c
 src/pc.c
 src/bus.c)
 
-set(CommonSources)
-
 add_executable(pc ${Sources} ${CommonSources})
 
 target_include_directories(pc PRIVATE include ../common/include)
