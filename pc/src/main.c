@@ -111,16 +111,6 @@ int main(int argc, const char **argv)
      *  jmp.dw adr/--- 100004
      *
      *  */
-    uint8_t program[] = {
-            INSTR_MAKE_HEAD(BYTE, REGISTER, REGISTER), CPU_CAT_8_XOR, 0x00, 0x00,
-            INSTR_MAKE_HEAD(BYTE, ADDRESS, IMMEDIATE), CPU_CAT_8_COMPARE, /* LSB DWORD 00000060 = 60 00 00 00 */ 0x60, 0x00, 0x00, 0x00, /* RA */ 0x00,
-            INSTR_MAKE_HEAD(BYTE, ADDRESS, NONE), CPU_CAT_8_JUMP_IF_NOT_EQUAL, /* LSB DWORD 00100004 = 04 00 10 00 */ 0x04, 0x00, 0x10, 0x00,
-            INSTR_MAKE_HEAD(BYTE, ADDRESS, REGISTER_INDIRECT_WITH_OFFSET), CPU_CAT_8_MOVE,
-
-    };
-
-    bus_write(&pc.bus, 0x100000, sizeof(program), program);
-    pc.cpu.state.regs.pc = 0x100000;
 
     cpu_start(&pc.cpu);
     printf("CPU done\n");

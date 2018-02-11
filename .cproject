@@ -40,7 +40,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src|pc|iset/cat|include|src/dev|cmf|cat|vio|src/basm|src/iz|common/include/cmf|is|common|src/cpu|src/iset/cat|ncln|ncas|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="programs|src|pc|iset/cat|include|src/dev|cmf|cat|vio|src/basm|src/iz|common/include/cmf|is|common|src/cpu|src/iset/cat|ncln|ncas|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="include|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common"/>
 						<entry excluding="cvm" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/include"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/include/cvm"/>
@@ -59,6 +59,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/src/cpu/cat"/>
 						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/src/vio"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/src/vio/dev"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="programs"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -104,7 +105,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src|pc|iset/cat|include|src/dev|cmf|cat|common/include|vio|src/basm|src/iz|is|common|common/src|src/cpu|src/iset/cat|ncln|ncas|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="programs|src|pc|iset/cat|include|src/dev|cmf|cat|common/include|vio|src/basm|src/iz|is|common|common/src|src/cpu|src/iset/cat|ncln|ncas|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="include|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common"/>
 						<entry excluding="cvm" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/include"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/include/cvm"/>
@@ -123,6 +124,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src/cpu/cat"/>
 						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src/vio"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src/vio/dev"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="programs"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

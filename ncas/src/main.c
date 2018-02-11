@@ -43,7 +43,7 @@ int main(int argc, const char **argv)
     size_t i = 0;
     for (; i < ctx->tokens->length; ++i)
     {
-        printf("%s\n", *(char **)array_get(ctx->tokens, i));
+        printf("%s ", *(char **)array_get(ctx->tokens, i));
     }
 
     fclose(file);

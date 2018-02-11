@@ -77,6 +77,19 @@ void array_push(struct array_s *array, const void *items, size_t count)
     array->length += count;
 }
 
+void *array_pop(struct array_s *array)
+{
+    if (array->length == 0)
+        return NULL;
+
+    void *result = malloc(array->item_size);
+    memcpy(result, array_get(array, array->length - 1), array->item_size);
+
+    array->length--;
+
+    return result;
+}
+
 void *array_get(struct array_s *array, size_t index)
 {
     if (index > array->length)

@@ -9,6 +9,20 @@
 
 #include "array.h"
 
+enum token_type
+{
+    TOKEN_REGISTER,
+    TOKEN_IDENTIFIER,
+    TOKEN_SEPARATOR,
+    TOKEN_OPERATOR,
+    TOKEN_LITERAL
+};
+
+struct token_s
+{
+    char *contents;
+};
+
 struct tokenizer_context_s
 {
     struct array_s *buffer;
