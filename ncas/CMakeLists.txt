@@ -1,6 +1,6 @@
 set(Sources
 src/main.c
-src/tokenizer.c
+src/lexer.c
 )
 
 add_executable(ncas ${Sources} ${CommonSources})

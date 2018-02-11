@@ -1,6 +1,8 @@
 ; The goal is to make this file compile-able
 ; And the resulting program must work on the virtual PC
 
+"string literal; ,."
+
 ; The string to be printed must be located at 100100h
 
 	xor ra, ra                  ; reset ra

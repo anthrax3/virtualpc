@@ -6,9 +6,8 @@
  */
 
 #include "array.h"
-#include "tokenizer.h"
-
 #include <stdio.h>
+#include "lexer.h"
 
 int main(int argc, const char **argv)
 {
@@ -25,7 +24,7 @@ int main(int argc, const char **argv)
         return 1;
     }
 
-    struct tokenizer_context_s *ctx = tokenizer_init();
+    struct lexer_context_s *ctx = lexer_init();
 
     char c;
 
@@ -36,18 +35,19 @@ int main(int argc, const char **argv)
         if (c == EOF)
             break;
 
-        tokenizer_push_char(ctx, c);
+        lexer_push_char(ctx, c);
     }
-    tokenizer_split(ctx);
+    lexer_split(ctx);
 
     size_t i = 0;
     for (; i < ctx->tokens->length; ++i)
     {
-        printf("%s ", *(char **)array_get(ctx->tokens, i));
+        struct token_s *token = array_get(ctx->tokens, i);
+        printf("%d\t%s\t%u\n", token->type, token->contents, token->number);
     }
 
     fclose(file);
-    tokenizer_destroy(ctx);
+    lexer_destroy(ctx);
 
     return 0;
 }
