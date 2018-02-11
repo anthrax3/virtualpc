@@ -40,11 +40,22 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="iset/cat|include|src/dev|cmf|cat|vio|src/basm|src/iz|common/include/cmf|is|common|src/cpu|src/iset/cat|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="pc|iset/cat|include|src/dev|cmf|cat|vio|src/basm|src/iz|common/include/cmf|is|common|src/cpu|src/iset/cat|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="include|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common"/>
 						<entry excluding="cvm" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/include"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/include/cvm"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/src/vio"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/src/vio/dev"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/src/cpu"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/src/cpu/cat"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/include"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/include/vio"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/include/vio/dev"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/include/cpu"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="pc/include/cpu/cat"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -89,14 +100,37 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.1737142867.1158922459.1802471827" name="/" resourcePath="pc">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.base.336900999" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.base" unusedChildren="">
+							<tool id="cdt.managedbuild.tool.gnu.archiver.base.696332843" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.1094239889"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.430501915" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.354325348"/>
+							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.598522747" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.403214446">
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1511498782" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.889928398" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base.1786240922"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1028884768" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base.89477013"/>
+							<tool id="cdt.managedbuild.tool.gnu.assembler.base.1612357003" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.base.539153222">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1178248778" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							</tool>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
 						<entry excluding="pc|iset/cat|include|src/dev|cmf|cat|common/include|vio|src/basm|src/iz|is|common|common/src|src/cpu|src/iset/cat|dev|src/vio|src/is" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="include|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common"/>
 						<entry excluding="cvm" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/include"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/include/cvm"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="common/src"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/include"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src"/>
+						<entry excluding="include|include/cpu|include/cpu/cat|include/vio|include/vio/dev|src|src/cpu|src/cpu/cat|src/vio|src/vio/dev" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc"/>
+						<entry excluding="cpu|cpu/cat|vio|vio/dev" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/include"/>
+						<entry excluding="cat" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/include/cpu"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/include/cpu/cat"/>
+						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/include/vio"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/include/vio/dev"/>
+						<entry excluding="cpu|cpu/cat|vio|vio/dev" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src"/>
+						<entry excluding="cat" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src/cpu"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src/cpu/cat"/>
+						<entry excluding="dev" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src/vio"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="pc/src/vio/dev"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -108,6 +142,7 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="PC"/>
 		<configuration configurationName="Default">
 			<resource resourceType="PROJECT" workspacePath="/virtualpc"/>
 		</configuration>
