@@ -7,7 +7,13 @@
 
 #pragma once
 
+#include <stdint.h>
+
+#include "array.h"
+
 struct ncas_context_s
 {
+    uint32_t counter;
 
+    struct array_s *result;
 };
