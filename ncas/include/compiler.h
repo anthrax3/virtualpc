@@ -1,13 +1,11 @@
 /*
- * context.h
+ * parser.h
  *
  *  Created on: Feb 11, 2018
  *      Author: nullifiedcat
  */
 
 #pragma once
-
-#include <stdint.h>
 
 #include "array.h"
 
