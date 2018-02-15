@@ -3,10 +3,15 @@ src/main.c
 src/lexer.c
 )
 
-add_executable(ncas ${Sources} ${CommonSources})
+set(Headers
+include/lexer.h
+include/compiler.h
+)
+
+add_executable(ncas ${Sources} ${CommonSources} ${Headers} ${CommonHeaders})
 
 target_include_directories(ncas PRIVATE include ../common/include)
 target_compile_definitions(ncas PRIVATE _POSIX_C_SOURCE=200112L)
 set_target_properties(ncas PROPERTIES
-    COMPILE_FLAGS "-Werror -Wall -std=c89 -ansi"
+    COMPILE_FLAGS "-Werror -Wall -Wextra -ansi"
 )

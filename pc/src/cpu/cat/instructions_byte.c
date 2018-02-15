@@ -29,6 +29,7 @@ void cpu_cat_8_exchange(struct cpu_execution_state *state)
 }
 void cpu_cat_8_compare(struct cpu_execution_state *state)
 {
+    CPU_ASSERT(OPERAND_IS_READABLE(0), CPU_ERROR_ILLEGAL_OPERAND);
     /* TODO (signed/unsigned???) */
 }
 void cpu_cat_8_add(struct cpu_execution_state *state)

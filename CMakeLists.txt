@@ -6,5 +6,12 @@ set(CommonSources
 ../common/src/registers.c
 )
 
+set(CommonHeaders
+../common/include/registers.h
+../common/include/cvm/cvm.h
+../common/include/instructions.h
+../common/include/array.h
+)
+
 add_subdirectory(pc)
 add_subdirectory(ncas)
