@@ -1,12 +1,12 @@
 set(Sources
 src/main.c
 src/lexer.c
-)
+src/compiler.c)
 
 set(Headers
 include/lexer.h
 include/compiler.h
-)
+include/compiler.h)
 
 add_executable(ncas ${Sources} ${CommonSources} ${Headers} ${CommonHeaders})
 
