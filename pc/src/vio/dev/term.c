@@ -13,6 +13,7 @@
 
 void viod_term_init(struct vio_internal_device_s *device)
 {
+    (void)device;
 }
 
 void viod_term_clock(struct vio_internal_device_s *device)
@@ -37,6 +38,7 @@ void viod_term_clock(struct vio_internal_device_s *device)
 
 void viod_term_destroy(struct vio_internal_device_s *device)
 {
+    (void)device;
 }
 
 struct vio_device_implementation_s viod_term = {

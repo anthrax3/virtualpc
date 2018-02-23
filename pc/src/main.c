@@ -44,6 +44,9 @@ void test_bus(struct pc_s *pc)
 
 int main(int argc, const char **argv)
 {
+    (void)argc;
+    (void)argv;
+
     struct pc_s pc;
 
     pc_init(&pc);
