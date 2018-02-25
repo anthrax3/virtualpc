@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+struct pc_s;
+
 enum bus_memory_permission
 {
     BPERM_READABLE = (1 << 0),

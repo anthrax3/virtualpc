@@ -1,48 +1,17 @@
 /*
- * instructions_byte.h
- *
- *  Created on: Feb 6, 2018
- *      Author: nullifiedcat
- */
+  Created by nullifiedcat on 25.02.18.
+*/
+
 
 #pragma once
 
-/* 8-bit instructions */
-enum cpu_cat_instruction_byte
-{
-    /* Basic operations */
-    CPU_CAT_8_MOVE,
-    CPU_CAT_8_LOAD_EFFECTIVE_ADDRESS,
-    CPU_CAT_8_EXCHANGE,
-    /* Logic? */
-    CPU_CAT_8_COMPARE,
-    /* Arithmetic */
-    CPU_CAT_8_ADD,
-    CPU_CAT_8_SUBTRACT,
-    CPU_CAT_8_MULTIPLY,
-    CPU_CAT_8_DIVIDE,
-    CPU_CAT_8_NEGATE,
-    CPU_CAT_8_INCREMENT,
-    CPU_CAT_8_DECREMENT,
-    /* Jumps */
-    CPU_CAT_8_JUMP,
-    CPU_CAT_8_JUMP_IF_EQUAL,
-    CPU_CAT_8_JUMP_IF_NOT_EQUAL,
-    CPU_CAT_8_JUMP_IF_GREATER,
-    CPU_CAT_8_JUMP_IF_GREATER_OR_EQUAL,
-    CPU_CAT_8_JUMP_IF_LESS,
-    CPU_CAT_8_JUMP_IF_LESS_OR_EQUAL,
-    /* Bit logic operators */
-    CPU_CAT_8_NOT,
-    CPU_CAT_8_AND,
-    CPU_CAT_8_OR,
-    CPU_CAT_8_XOR,
-    /* Bit shifting */
-    CPU_CAT_8_SHL,
-    CPU_CAT_8_SHR,
-    /* Amount of instructions (must be less than 64!) */
-    CPU_CAT_8_COUNT
-};
+#include <stdint.h>
+
+struct cpu_execution_state;
+
+typedef void(*cpu_instruction)(struct cpu_execution_state *state);
+
+void cpu_cat_6_halt(struct cpu_execution_state *state);
 
 void cpu_cat_8_move(struct cpu_execution_state *state);
 void cpu_cat_8_load_effective_address(struct cpu_execution_state *state);
@@ -68,3 +37,5 @@ void cpu_cat_8_or(struct cpu_execution_state *state);
 void cpu_cat_8_xor(struct cpu_execution_state *state);
 void cpu_cat_8_shl(struct cpu_execution_state *state);
 void cpu_cat_8_shr(struct cpu_execution_state *state);
+
+cpu_instruction cat_cpu_instruction_lookup(uint8_t size, uint32_t instruction);

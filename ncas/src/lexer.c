@@ -47,17 +47,19 @@ enum token_type lexer_identify(const char *token)
         return TOKEN_OPERATOR;
     case '"':
         return TOKEN_STRING_LITERAL;
+    default:
+        break;
     }
 
-    size_t i = 0;
+    uint32_t i = 0;
 
     for (; i < REGISTER_COUNT; ++i)
     {
-        if (register_get(i))
-        {
-            if (!strcmp(register_get(i)->name, token))
-                return TOKEN_REGISTER;
-        }
+        if (!register_get(i))
+            continue;
+
+        if (!strcmp(register_get(i)->name, token))
+            return TOKEN_REGISTER;
     }
 
 

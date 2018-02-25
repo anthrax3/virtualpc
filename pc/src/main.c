@@ -6,11 +6,8 @@
  */
 
 #include "pc.h"
-#include "cpu.h"
-#include "vio/vio.h"
 #include "vio/dev/term.h"
-#include "cpu/cat/cat.h"
-#include "cpu/cat/instructions_byte.h"
+#include "cpu/implcat.h"
 
 #include <stdio.h>
 #include <string.h>

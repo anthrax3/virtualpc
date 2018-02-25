@@ -2,10 +2,12 @@
 #include "mem.h"
 #include "pc.h"
 #include "bus.h"
+#include "registers.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <instruction.h>
 
 /*
     read /misc
@@ -86,8 +88,8 @@ void cpu_dump_information(struct cpu_s *cpu)
 
 void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
 {
-    uint8_t head;
-    uint8_t length = 1;
+    union instruction_head_s head;
+    uint8_t length = 0;
 
     enum bus_error error;
 
@@ -96,24 +98,20 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
         pc_raise_exception(cpu->pc, PCEXCAT_BUS, error);
     }
 
-    uint8_t size = ((head & 0xc0) >> 6) & 0x3;
+    state->head = head;
 
     /* 6-bit instruction with no operands */
-    if (size == 3)
+    if (head.size == CPU_WIDTH_VOID)
     {
-        state->instruction[0]     = head;
         state->instruction_length = 1;
-        state->instruction_size   = 3;
+        state->instruction_width  = CPU_WIDTH_VOID;
         cpu->state.regs.pc++;
         return;
     }
 
-    uint8_t addr1 = ((head & 0x38) >> 3) & 0x7;
-    uint8_t addr2 = (head & 0x07);
+    length += (1 << head.size);
 
-    length += (1 << size);
-
-    uint32_t first_byte;
+    uint8_t first_byte;
 
     if ((error = bus_read(&cpu->pc->bus, cpu->state.regs.pc + 1, 1, &first_byte)) !=
         BER_SUCCESS)
@@ -121,19 +119,19 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
         pc_raise_exception(cpu->pc, PCEXCAT_BUS, error);
     }
 
-    state->instruction_size = (first_byte & 0xc0) >> 6;
+    state->instruction_width = (first_byte & 0xc0) >> 6;
 
-    if (state->instruction_size != 3)
+    if (state->instruction_width != CPU_WIDTH_VOID)
     {
-        if (addr1 != 0)
-            length += cpu_addressing_offsets[addr1];
+        if (head.addressing.first != OPERAND_MODE_IMMEDIATE)
+            length += cpu_addressing_offsets[head.addressing.first];
         else
-            length += (1 << state->instruction_size);
+            length += (1 << state->instruction_width);
 
-        if (addr2 != 0)
-            length += cpu_addressing_offsets[addr2];
+        if (head.addressing.second != 0)
+            length += cpu_addressing_offsets[head.addressing.second];
         else
-            length += (1 << state->instruction_size);
+            length += (1 << state->instruction_width);
     }
 
     if (length > 16)
@@ -144,18 +142,18 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
 
     state->instruction_length = length;
 
-    bus_read(&cpu->pc->bus, cpu->state.regs.pc, length, state->instruction);
+    bus_read(&cpu->pc->bus, cpu->state.regs.pc + 1, length, state->instruction);
     cpu->state.regs.pc += length;
 }
 
-uint32_t *cpu_register(struct cpu_s *cpu, uint8_t name)
+uint32_t *cpu_register(struct cpu_s *cpu, uint32_t name)
 {
-    if (name < 8)
-        return &cpu->state.regs.rx[name];
-    if (name == 9)
-        return &cpu->state.regs.sp;
+    const struct register_description_s *reg = register_get(name);
 
-    return NULL;
+    if (reg == NULL)
+        return NULL;
+
+    return (uint32_t *)&cpu->state.regs + reg->offset;
 }
 
 /*

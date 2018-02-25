@@ -5,6 +5,7 @@
 #include "compiler.h"
 
 #include <stdio.h>
+#include <string.h>
 
 struct compiler_state_s *compiler_init()
 {
@@ -27,7 +28,41 @@ int compiler_process_file(struct compiler_state_s *state, const char *path)
         lexer_push_char(state->lexer, c);
     }
 
+
+
     return 0;
+}
+
+
+void compiler_step(struct compiler_state_s *state)
+{
+    (void) state;
+}
+
+void compiler_add_label_here(struct compiler_state_s *state, const char *label)
+{
+    struct compiler_label_s created;
+
+    created.counter = state->counter;
+    strncpy(created.name, label, COMPILER_LABEL_MAX_LENGTH);
+    created.name[COMPILER_LABEL_MAX_LENGTH - 1] = 0;
+
+    array_push(state->labels, &created, 1);
+}
+
+uint32_t compiler_find_label(struct compiler_state_s *state, const char *label)
+{
+    size_t i = 0;
+    for (; i < state->labels->length; ++i)
+    {
+        struct compiler_label_s *current = array_get(state->labels, i);
+        if (strncmp(current->name, label, COMPILER_LABEL_MAX_LENGTH) == 0)
+        {
+            return current->counter;
+        }
+    }
+    /* No label was found */
+    return UINT32_MAX;
 }
 
 void compiler_destroy(struct compiler_state_s *state)

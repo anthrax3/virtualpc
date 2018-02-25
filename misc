@@ -10,7 +10,11 @@ v - variable size
 7 - 0 - no operand - none
 
 instruction =
-size:2, addressing: 6, instruction:size, address...
+size:2, addressing: 6, width:2 | instruction:size, address...
+
+SIZE: How many bytes instruction takes (1/2/4)
+LENGTH: How many bytes whole instruction takes (with operands)
+WIDTH: How much data the instruction processes (1/2/4)
 
 0 - byte
 1 - word

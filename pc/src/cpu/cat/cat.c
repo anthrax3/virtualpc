@@ -5,16 +5,14 @@
  *      Author: nullifiedcat
  */
 
-#include "cpu/cat/cat.h"
-#include "cpu/cat/instructions_micro.h"
-#include "cpu/cat/instructions_byte.h"
-#include "cpu/cat/instructions_word.h"
-#include "cpu/cat/instructions_dword.h"
+#include "iset/instructions.h"
+#include "iset/micro.h"
+#include "cpu/implcat.h"
 
 #include <stdlib.h>
 
-cpu_instruction cat_instructions_micro[CPU_CAT_6_COUNT]  = { cpu_cat_6_halt };
-cpu_instruction cat_instructions_byte[CPU_CAT_8_COUNT]   = {
+cpu_instruction cat_instructions_micro[ISET_CAT_MICRO_COUNT]  = { cpu_cat_6_halt };
+cpu_instruction cat_instructions[ISET_CAT_COUNT]   = {
         cpu_cat_8_move,
         cpu_cat_8_exchange,
         cpu_cat_8_compare,
@@ -39,33 +37,24 @@ cpu_instruction cat_instructions_byte[CPU_CAT_8_COUNT]   = {
         cpu_cat_8_shl,
         cpu_cat_8_shr };
 
-cpu_instruction cat_instructions_word[CPU_CAT_16_COUNT]  = { };
-cpu_instruction cat_instructions_dword[CPU_CAT_32_COUNT] = { };
-
-cpu_instruction *cat_instruction_sets[] = {
-        cat_instructions_byte,
-        cat_instructions_word,
-        cat_instructions_dword,
-        cat_instructions_micro
-};
-
-uint32_t cat_instruction_count[] = {
-        CPU_CAT_8_COUNT,
-        CPU_CAT_16_COUNT,
-        CPU_CAT_32_COUNT,
-        CPU_CAT_6_COUNT
-};
-
 cpu_instruction cat_cpu_instruction_lookup(uint8_t size, uint32_t instruction)
 {
     if (size > 3)
         return NULL;
 
     if (size == 3)
+    {
         instruction &= 0x3f;
+        if (instruction >= ISET_CAT_MICRO_COUNT)
+            return NULL;
 
-    if (instruction >= cat_instruction_count[size])
-        return NULL;
+        return cat_instructions_micro[instruction];
+    }
+    else
+    {
+        if (instruction >= ISET_CAT_COUNT)
+            return NULL;
 
-    return cat_instruction_sets[size][instruction];
+        return cat_instructions[instruction];
+    }
 }

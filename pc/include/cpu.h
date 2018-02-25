@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <instruction.h>
 
 struct cpu_s;
 struct cpu_execution_state;
@@ -60,11 +61,12 @@ struct cpu_operand_s
 
 struct cpu_execution_state
 {
+    union instruction_head_s head;
     uint8_t instruction[16];
     /* LENGTH (in bytes) */
     uint8_t instruction_length;
-    /* SIZE (byte, word, dword..) */
-    uint8_t instruction_size;
+    /* SIZE (width, word, dword..) */
+    enum cpu_width instruction_width;
     cpu_instruction implementation;
     struct cpu_operand_s operands[2];
     struct cpu_s *cpu;
@@ -94,7 +96,7 @@ void cpu_step(struct cpu_s *cpu);
 
 void cpu_dump_information(struct cpu_s *cpu);
 
-uint32_t *cpu_register(struct cpu_s *cpu, uint8_t name);
+uint32_t *cpu_register(struct cpu_s *cpu, uint32_t name);
 
 void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state);
 void cpu_decode(struct cpu_s *cpu, struct cpu_execution_state *state);

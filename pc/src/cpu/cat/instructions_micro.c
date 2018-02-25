@@ -6,7 +6,7 @@
  */
 
 #include "cpu.h"
-#include "cpu/cat/instructions_micro.h"
+#include "cpu/implcat.h"
 
 void cpu_cat_6_halt(struct cpu_execution_state *state)
 {

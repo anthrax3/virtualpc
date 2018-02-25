@@ -7,12 +7,14 @@
 
 #pragma once
 
-enum instruction_length
+#include <stdint.h>
+
+enum cpu_width
 {
-    INSTRUCTION_LENGTH_BYTE,
-    INSTRUCTION_LENGTH_WORD,
-    INSTRUCTION_LENGTH_DWORD,
-    INSTRUCTION_LENGTH_MICRO
+    CPU_WIDTH_BYTE,
+    CPU_WIDTH_WORD,
+    CPU_WIDTH_DWORD,
+    CPU_WIDTH_VOID
 };
 
 enum operand_mode
@@ -35,16 +37,23 @@ enum operand_flags
     OPERAND_MUST_BE_EMPTY = (1 << 3)
 };
 
-struct instruction_head_s
-{
-
-};
-
-struct instruction_description_s
+union instruction_head_s
 {
     struct
     {
-        char operand_1 : 4;
-        char operand_2 : 4;
-    } operand_flags;
+        uint8_t size : 2;
+        union
+        {
+            struct
+            {
+                uint8_t first : 3;
+                uint8_t second : 3;
+            } addressing;
+            struct
+            {
+                uint8_t instruction : 6;
+            } micro;
+        };
+    };
+    uint8_t byte;
 };

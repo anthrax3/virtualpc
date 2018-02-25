@@ -6,7 +6,7 @@
  */
 
 #include "cpu.h"
-#include "cpu/cat/instructions_micro.h"
+#include "cpu/implcat.h"
 #include "cpu/operand.h"
 
 void cpu_cat_8_move(struct cpu_execution_state *state)
