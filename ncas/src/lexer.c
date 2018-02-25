@@ -62,7 +62,6 @@ enum token_type lexer_identify(const char *token)
             return TOKEN_REGISTER;
     }
 
-
     char hex = (token[length - 1] == 'h');
     for (i = 0; i < length; ++i)
     {
@@ -82,7 +81,7 @@ enum token_type lexer_identify(const char *token)
 uint32_t lexer_parse_number(const char *token)
 {
     uint32_t length = strlen(token);
-    int base = 10;
+    int base        = 10;
 
     if (token[length - 1] == 'h')
         base = 16;
@@ -104,7 +103,7 @@ void lexer_split(struct lexer_context_s *context)
 
     struct token_s token;
     token.contents = buffer;
-    token.type = lexer_identify(buffer);
+    token.type     = lexer_identify(buffer);
     if (token.type == TOKEN_NUMBER_LITERAL)
         token.number = lexer_parse_number(buffer);
     else
@@ -142,7 +141,7 @@ void lexer_push_char(struct lexer_context_s *context, char c)
         break;
     case '"':
         if (context->flags.reading_string)
-            context->flags.split = 1;
+            context->flags.split      = 1;
         context->flags.reading_string = !context->flags.reading_string;
         break;
     case ';':

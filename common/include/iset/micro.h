@@ -2,7 +2,6 @@
   Created by nullifiedcat on 25.02.18.
 */
 
-
 #pragma once
 
 enum iset_cat_micro

@@ -42,7 +42,7 @@ enum bus_error bus_address_check(struct bus_s *bus,
                                  struct bus_memory_mapping_s *mapping,
                                  uint32_t address, uint32_t length)
 {
-    (void)bus;
+    (void) bus;
 
     /* Mapping must exist */
     if (mapping == NULL)
@@ -115,8 +115,8 @@ enum bus_error bus_memory_map(struct bus_s *bus, uint32_t address,
 
 enum bus_error bus_memory_unmap(struct bus_s *bus, uint32_t address)
 {
-    (void)bus;
-    (void)address;
+    (void) bus;
+    (void) address;
 
     /* to be implemented */
 

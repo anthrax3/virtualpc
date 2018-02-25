@@ -47,7 +47,7 @@ struct compiler_operand_s
 struct compiler_instruction_s
 {
     uint32_t instruction;
-    uint8_t  width;
+    uint8_t width;
 
     struct compiler_operand_s operands[2];
 };
@@ -57,10 +57,13 @@ int compiler_process_file(struct compiler_state_s *state, const char *path);
 void compiler_destroy(struct compiler_state_s *state);
 
 void compiler_step(struct compiler_state_s *state);
-int compiler_read_instruction(struct compiler_state_s *state);
-int compiler_read_operand(struct compiler_state_s *state, struct compiler_operand_s* out);
 
-uint32_t compiler_instruction_write(struct compiler_instruction_s instruction, uint8_t *out, uint32_t space);
+int compiler_read_instruction(struct compiler_state_s *state);
+int compiler_read_operand(struct compiler_state_s *state,
+                          struct compiler_operand_s *out);
+
+uint32_t compiler_instruction_write(struct compiler_instruction_s instruction,
+                                    uint8_t *out, uint32_t space);
 
 void compiler_add_label_here(struct compiler_state_s *state, const char *label);
 uint32_t compiler_find_label(struct compiler_state_s *state, const char *label);

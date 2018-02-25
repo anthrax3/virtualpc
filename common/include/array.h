@@ -11,7 +11,7 @@
 
 struct array_s
 {
-    void(*delete_fn)(void *);
+    void (*delete_fn)(void *);
 
     size_t item_size;
     size_t length;
@@ -19,7 +19,7 @@ struct array_s
     void *memory;
 };
 
-struct array_s *array_init(size_t item_size, void(*delete_fn)(void *));
+struct array_s *array_init(size_t item_size, void (*delete_fn)(void *));
 void array_destroy(struct array_s *array);
 
 void array_resize(struct array_s *array, size_t length);

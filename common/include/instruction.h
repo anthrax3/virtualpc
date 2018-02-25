@@ -31,19 +31,17 @@ enum operand_mode
 
 enum operand_flags
 {
-    OPERAND_MUST_BE_READABLE = (1 << 0),
+    OPERAND_MUST_BE_READABLE    = (1 << 0),
     OPERAND_MUST_BE_ADDRESSABLE = (1 << 1),
-    OPERAND_MUST_BE_WRITABLE = (1 << 2),
-    OPERAND_MUST_BE_EMPTY = (1 << 3)
+    OPERAND_MUST_BE_WRITABLE    = (1 << 2),
+    OPERAND_MUST_BE_EMPTY       = (1 << 3)
 };
 
-union instruction_head_s
-{
+union instruction_head_s {
     struct
     {
         uint8_t size : 2;
-        union
-        {
+        union {
             struct
             {
                 uint8_t first : 3;

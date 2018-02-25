@@ -11,8 +11,7 @@ typedef void (*cpu_instruction)(struct cpu_execution_state *state);
 typedef cpu_instruction (*cpu_instruction_lookup)(uint8_t size,
                                                   uint32_t instruction);
 
-union cpu_flags_s
-{
+union cpu_flags_s {
     struct
     {
         bool carry : 1;

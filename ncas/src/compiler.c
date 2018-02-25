@@ -9,9 +9,10 @@
 
 struct compiler_state_s *compiler_init()
 {
-    struct compiler_state_s *result = calloc(1, sizeof(struct compiler_state_s));
+    struct compiler_state_s *result =
+        calloc(1, sizeof(struct compiler_state_s));
     result->labels = array_init(sizeof(struct compiler_label_s), NULL);
-    result->lexer = lexer_init();
+    result->lexer  = lexer_init();
     return result;
 }
 
@@ -23,16 +24,13 @@ int compiler_process_file(struct compiler_state_s *state, const char *path)
         return 1;
 
     char c;
-    while ((c = (char)fgetc(file)) != EOF)
+    while ((c = (char) fgetc(file)) != EOF)
     {
         lexer_push_char(state->lexer, c);
     }
 
-
-
     return 0;
 }
-
 
 void compiler_step(struct compiler_state_s *state)
 {

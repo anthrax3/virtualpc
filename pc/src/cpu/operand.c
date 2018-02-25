@@ -18,7 +18,8 @@ uint32_t operand_read(struct cpu_execution_state *state, uint8_t index)
     case CPU_OPT_ADDRESS:
     {
         uint32_t temp = 0;
-        bus_read(&state->cpu->pc->bus, operand.value, (1 << state->instruction_width), &temp);
+        bus_read(&state->cpu->pc->bus, operand.value,
+                 (1 << state->instruction_width), &temp);
         return temp;
     }
     case CPU_OPT_CONSTANT:
@@ -39,14 +40,16 @@ uint32_t operand_read(struct cpu_execution_state *state, uint8_t index)
     return 0;
 }
 
-void operand_write(struct cpu_execution_state *state, uint8_t index, uint32_t value)
+void operand_write(struct cpu_execution_state *state, uint8_t index,
+                   uint32_t value)
 {
     struct cpu_operand_s operand = state->operands[index];
 
     switch (operand.type)
     {
     case CPU_OPT_ADDRESS:
-        bus_write(&state->cpu->pc->bus, operand.value, (1 << state->instruction_width), &value);
+        bus_write(&state->cpu->pc->bus, operand.value,
+                  (1 << state->instruction_width), &value);
         return;
     case CPU_OPT_REGISTER:
     {

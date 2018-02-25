@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct array_s *array_init(size_t item_size, void(*delete_fn)(void *))
+struct array_s *array_init(size_t item_size, void (*delete_fn)(void *))
 {
     struct array_s *result = calloc(1, sizeof(struct array_s));
 
@@ -72,7 +72,8 @@ void array_push(struct array_s *array, const void *items, size_t count)
     if (new_size != array->reserved)
         array_reserve(array, new_size);
 
-    memcpy(array->memory + array->length * array->item_size, items, count * array->item_size);
+    memcpy(array->memory + array->length * array->item_size, items,
+           count * array->item_size);
 
     array->length += count;
 }
@@ -110,5 +111,3 @@ void array_set(struct array_s *array, size_t index, const void *item)
 
     memcpy(array->memory + index * array->item_size, item, array->item_size);
 }
-
-

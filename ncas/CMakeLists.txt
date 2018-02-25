@@ -1,7 +1,7 @@
 set(Sources
         src/main.c
         src/lexer.c
-        src/compiler.c)
+        src/compiler.c src/mnemonics.c)
 
 set(Headers
         include/lexer.h

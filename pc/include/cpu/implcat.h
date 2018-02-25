@@ -2,14 +2,13 @@
   Created by nullifiedcat on 25.02.18.
 */
 
-
 #pragma once
 
 #include <stdint.h>
 
 struct cpu_execution_state;
 
-typedef void(*cpu_instruction)(struct cpu_execution_state *state);
+typedef void (*cpu_instruction)(struct cpu_execution_state *state);
 
 void cpu_cat_6_halt(struct cpu_execution_state *state);
 

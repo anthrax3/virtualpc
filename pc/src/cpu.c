@@ -93,7 +93,8 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
 
     enum bus_error error;
 
-    if ((error = bus_read(&cpu->pc->bus, cpu->state.regs.pc, 1, &head)) != BER_SUCCESS)
+    if ((error = bus_read(&cpu->pc->bus, cpu->state.regs.pc, 1, &head)) !=
+        BER_SUCCESS)
     {
         pc_raise_exception(cpu->pc, PCEXCAT_BUS, error);
     }
@@ -113,8 +114,8 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
 
     uint8_t first_byte;
 
-    if ((error = bus_read(&cpu->pc->bus, cpu->state.regs.pc + 1, 1, &first_byte)) !=
-        BER_SUCCESS)
+    if ((error = bus_read(&cpu->pc->bus, cpu->state.regs.pc + 1, 1,
+                          &first_byte)) != BER_SUCCESS)
     {
         pc_raise_exception(cpu->pc, PCEXCAT_BUS, error);
     }
@@ -136,7 +137,8 @@ void cpu_fetch(struct cpu_s *cpu, struct cpu_execution_state *state)
 
     if (length > 16)
     {
-        pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_INSTRUCTION_TOO_LONG);
+        pc_raise_exception(cpu->pc, PCEXCAT_CPU,
+                           CPU_ERROR_INSTRUCTION_TOO_LONG);
         length = 16;
     }
 
@@ -153,7 +155,7 @@ uint32_t *cpu_register(struct cpu_s *cpu, uint32_t name)
     if (reg == NULL)
         return NULL;
 
-    return (uint32_t *)&cpu->state.regs + reg->offset;
+    return (uint32_t *) &cpu->state.regs + reg->offset;
 }
 
 /*
@@ -190,7 +192,8 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
             result.value = *reg;
         else
         {
-            pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_UNKNOWN_REGISTER);
+            pc_raise_exception(cpu->pc, PCEXCAT_CPU,
+                               CPU_ERROR_UNKNOWN_REGISTER);
             result.value = 0xFFFFFFFF;
         }
         break;
@@ -203,7 +206,8 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
             result.value = *reg + *(uint32_t *) (&data[1]);
         else
         {
-            pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_UNKNOWN_REGISTER);
+            pc_raise_exception(cpu->pc, PCEXCAT_CPU,
+                               CPU_ERROR_UNKNOWN_REGISTER);
             result.value = 0xFFFFFFFF;
         }
         break;
@@ -217,13 +221,14 @@ struct cpu_operand_s cpu_decode_operand(struct cpu_s *cpu, uint8_t mode,
             result.value = *regA + *regB * (*(uint16_t *) (&data[2]));
         else
         {
-            pc_raise_exception(cpu->pc, PCEXCAT_CPU, CPU_ERROR_UNKNOWN_REGISTER);
+            pc_raise_exception(cpu->pc, PCEXCAT_CPU,
+                               CPU_ERROR_UNKNOWN_REGISTER);
             result.value = 0xFFFFFFFF;
         }
         break;
     }
     case 7:
-        result.type = CPU_OPT_NONE;
+        result.type  = CPU_OPT_NONE;
         result.value = 0x0;
         break;
     default:
@@ -248,29 +253,29 @@ void cpu_decode(struct cpu_s *cpu, struct cpu_execution_state *state)
         printf("\n");
     }
 
-    uint8_t head = cpu->state.execution.instruction[0];
+    uint8_t i = 0;
 
-    uint8_t size  = ((head & 0xc0) >> 6) & 0x3;
-    uint8_t addr1 = ((head & 0x38) >> 3) & 0x7;
-    uint8_t addr2 = (head & 0x07);
-
-    uint8_t i = 2;
-
-    if (size != 3)
+    if (cpu->state.execution.head.size != CPU_WIDTH_VOID)
     {
-        if (addr1 != 7)
+        i += (1 << cpu->state.execution.head.size);
+        if (cpu->state.execution.head.addressing.first != OPERAND_MODE_NONE)
         {
             state->operands[0] = cpu_decode_operand(
-                cpu, addr1, cpu->state.execution.instruction + i);
-            i += cpu_addressing_offsets[addr1];
+                cpu, cpu->state.execution.head.addressing.first,
+                cpu->state.execution.instruction + i);
+            i += cpu_addressing_offsets[cpu->state.execution.head.addressing
+                                            .first];
 
-            if (addr2 != 7)
+            if (cpu->state.execution.head.addressing.second !=
+                OPERAND_MODE_NONE)
                 state->operands[1] = cpu_decode_operand(
-                    cpu, addr2, cpu->state.execution.instruction + i);
+                    cpu, cpu->state.execution.head.addressing.second,
+                    cpu->state.execution.instruction + i);
         }
     }
 
-    state->implementation = cpu->implementation(
-        size, *(uint32_t *) (&cpu->state.execution.instruction[1]));
+    state->implementation =
+        cpu->implementation(cpu->state.execution.head.size,
+                            *(uint32_t *) &cpu->state.execution.instruction[0]);
     state->cpu = cpu;
 }
