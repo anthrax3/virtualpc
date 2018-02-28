@@ -14,6 +14,7 @@
 enum token_type
 {
     TOKEN_REGISTER,
+    TOKEN_INSTRUCTION,
     TOKEN_IDENTIFIER,
     TOKEN_OPERATOR,
     TOKEN_KEYWORD,
@@ -22,12 +23,33 @@ enum token_type
     TOKEN_ILLEGAL
 };
 
+enum keyword_type
+{
+    KW_ORIGIN,
+    KW_CONST,
+
+    /* Width control */
+    KW_BYTE,
+    KW_WORD,
+    KW_DWORD,
+
+    KW_LAST
+};
+
 struct token_s
 {
     char *contents;
     enum token_type type;
-    /* For number literal */
-    uint32_t number;
+    union
+    {
+        /* For number literal */
+        uint32_t number;
+        /* For keyword */
+        enum keyword_type keyword;
+        /* For instruction */
+        uint32_t instruction;
+    } data;
+
 };
 
 struct lexer_context_s
@@ -45,6 +67,7 @@ struct lexer_context_s
 
 struct lexer_context_s *lexer_init();
 enum token_type lexer_identify(const char *token);
+enum keyword_type lexer_identify_keyword(const char *token);
 uint32_t lexer_parse_number(const char *token);
 void lexer_split(struct lexer_context_s *context);
 void lexer_push_char(struct lexer_context_s *context, char c);

@@ -56,7 +56,10 @@ struct compiler_state_s *compiler_init();
 int compiler_process_file(struct compiler_state_s *state, const char *path);
 void compiler_destroy(struct compiler_state_s *state);
 
-void compiler_step(struct compiler_state_s *state);
+int compiler_step(struct compiler_state_s *state);
+
+struct token_s *compiler_consume_token(struct compiler_state_s *state);
+struct token_s *compiler_peek_token(struct compiler_state_s *state);
 
 int compiler_read_instruction(struct compiler_state_s *state);
 int compiler_read_operand(struct compiler_state_s *state,

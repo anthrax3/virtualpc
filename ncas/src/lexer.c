@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <lexer.h>
 
 #include "lexer.h"
 #include "registers.h"
@@ -35,6 +36,13 @@ enum token_type lexer_identify(const char *token)
 
     if (length == 0)
         return TOKEN_ILLEGAL;
+
+    enum keyword_type kw = lexer_identify_keyword(token);
+
+    if (kw != KW_LAST)
+    {
+        return TOKEN_KEYWORD;
+    }
 
     switch (token[0])
     {
@@ -78,6 +86,24 @@ enum token_type lexer_identify(const char *token)
     return TOKEN_IDENTIFIER;
 }
 
+const char *keywords[] = {
+        [ KW_ORIGIN ] = "origin",
+        [ KW_CONST ] = "const",
+        [ KW_LAST ] = NULL
+};
+enum keyword_type lexer_identify_keyword(const char *token)
+{
+    int i = 0;
+
+    for (; i < KW_LAST; ++i)
+    {
+        if (strcmp(token, keywords[i]) == 0)
+            return i;
+    }
+
+    return KW_LAST;
+}
+
 uint32_t lexer_parse_number(const char *token)
 {
     uint32_t length = strlen(token);
@@ -104,10 +130,16 @@ void lexer_split(struct lexer_context_s *context)
     struct token_s token;
     token.contents = buffer;
     token.type     = lexer_identify(buffer);
-    if (token.type == TOKEN_NUMBER_LITERAL)
-        token.number = lexer_parse_number(buffer);
-    else
-        token.number = 0;
+    switch (token.type)
+    {
+    case TOKEN_NUMBER_LITERAL:
+        token.data.number = lexer_parse_number(buffer);
+        break;
+    case TOKEN_KEYWORD:
+        token.data.keyword = lexer_identify_keyword(buffer);
+        break;
+    case TOKEN_REGISTER:
+    }
 
     array_push(context->tokens, &token, 1);
 }

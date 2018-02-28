@@ -6,4 +6,5 @@
 
 #include <stdint.h>
 
-int instruction_from_mnemonic(uint32_t *out, uint32_t *size);
+int instruction_from_mnemonic(const char *mnemonic, uint32_t *out,
+                              uint32_t *size);

@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <lexer.h>
 
 struct compiler_state_s *compiler_init()
 {
@@ -28,13 +29,71 @@ int compiler_process_file(struct compiler_state_s *state, const char *path)
     {
         lexer_push_char(state->lexer, c);
     }
+    lexer_split(state->lexer);
+
+    while (compiler_step(state) == EXIT_SUCCESS);
 
     return 0;
 }
 
-void compiler_step(struct compiler_state_s *state)
+struct token_s *compiler_consume_token(struct compiler_state_s *state)
 {
-    (void) state;
+    struct token_s *result = compiler_peek_token(state);
+
+    if (result != NULL)
+        ++state->token_counter;
+
+    return result;
+}
+
+struct token_s *compiler_peek_token(struct compiler_state_s *state)
+{
+    if (state->token_counter >= state->lexer->tokens->length)
+        return NULL;
+
+    return array_get(state->lexer->tokens, state->token_counter);
+}
+
+int compiler_step(struct compiler_state_s *state)
+{
+    struct token_s *token = compiler_consume_token(state);
+
+    if (token == NULL)
+        return EXIT_FAILURE;
+
+    printf("Token '%s', type %d\n", token->contents, token->type);
+
+    switch (token->type)
+    {
+    case TOKEN_OPERATOR:
+        if (token->contents[0] == ':')
+        {
+            struct token_s *name = compiler_consume_token(state);
+            if (name == NULL)
+                return EXIT_FAILURE;
+
+            compiler_add_label_here(state, name->contents);
+        }
+        else
+        {
+            printf("Excepted ':' operator, got %c\n", token->contents[0]);
+            return EXIT_FAILURE;
+        }
+        break;
+    case TOKEN_KEYWORD:
+        switch (token->data.keyword)
+        {
+        case KW_ORIGIN:
+            /* modify state->counter; */
+        default:
+            printf("Unexpected keyword %d\n", token->data.keyword);
+        }
+        break;
+    default:
+        printf("Unexpected token of type %d: '%s'\n", token->type, token->contents);
+    }
+
+    return EXIT_SUCCESS;
 }
 
 void compiler_add_label_here(struct compiler_state_s *state, const char *label)
