@@ -84,7 +84,18 @@ int compiler_step(struct compiler_state_s *state)
         switch (token->data.keyword)
         {
         case KW_ORIGIN:
+        {
             /* modify state->counter; */
+
+            struct token_s *value = compiler_consume_token(state);
+            if (value == NULL || value->type != TOKEN_NUMBER_LITERAL)
+            {
+                printf("Excepted number literal after 'origin'");
+                return EXIT_FAILURE;
+            }
+            state->counter = value->data.number;
+            break;
+        }
         default:
             printf("Unexpected keyword %d\n", token->data.keyword);
         }

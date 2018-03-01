@@ -33,4 +33,36 @@ Memory:
 
 Memory before 0x100000 is reserved for system
 
-0x100000 - 0x200000 is available for programs 
+0x100000 - 0x200000 is available for programs
+
+
+NAS syntax:
+
+Literals:
+- Number literal: 100h; 100d; 100b; 100o
+- String literal: "abcdef"
+
+- Number: [size] <number literal>
+- Byte sequence: <literal>, [literal...]
+
+Example:
+- Zero terminated string: "Zero-terminated", byte 0h
+
+* const values should be computed at compile time
+
+const A 100h
+mov ra, A + 100h ; Should be compiled as if it was "mov ra, 200h"
+
+* another example
+
+const A 10d
+const B 20d
+const C 40d
+
+mov [rb + A * B - C], A * B * B ; Should be compiled as "mov [rb + 160], 4000"
+
+Statements:
+
+<keyword> [arguments...]
+<instruction> [operands...]
+: <label name>

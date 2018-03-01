@@ -25,7 +25,8 @@ enum token_type
 
 enum keyword_type
 {
-    KW_ORIGIN,
+    KW_FIRST,
+    KW_ORIGIN = KW_FIRST,
     KW_CONST,
 
     /* Width control */
@@ -47,7 +48,13 @@ struct token_s
         /* For keyword */
         enum keyword_type keyword;
         /* For instruction */
-        uint32_t instruction;
+        struct
+        {
+            uint32_t width;
+            uint32_t instruction;
+        } instruction;
+        /* For register */
+        uint32_t register_name;
     } data;
 
 };
@@ -66,9 +73,9 @@ struct lexer_context_s
 };
 
 struct lexer_context_s *lexer_init();
-enum token_type lexer_identify(const char *token);
+enum token_type lexer_identify(struct token_s *token);
 enum keyword_type lexer_identify_keyword(const char *token);
-uint32_t lexer_parse_number(const char *token);
+int lexer_parse_number(const char *token, uint32_t *out);
 void lexer_split(struct lexer_context_s *context);
 void lexer_push_char(struct lexer_context_s *context, char c);
 void lexer_destroy(struct lexer_context_s *context);

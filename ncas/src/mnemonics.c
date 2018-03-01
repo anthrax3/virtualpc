@@ -9,6 +9,7 @@
 
 #include <string.h>
 #include <instruction.h>
+#include <stdlib.h>
 
 const char *imm_micro[] = {[ISET_CAT_MICRO_HALT] = "halt" };
 
@@ -44,14 +45,16 @@ const char *imm_normal[] = {
 int instruction_from_mnemonic(const char *mnemonic, uint32_t *out,
                               uint32_t *size)
 {
-    size_t i;
+    uint32_t i;
     for (i = 0; i < sizeof(imm_micro) / sizeof(imm_micro[0]); ++i)
     {
         if (!strcmp(imm_micro[i], mnemonic))
         {
-            *size = CPU_WIDTH_VOID;
-            *out = i;
-            return 0;
+            if (size)
+                *size = CPU_WIDTH_VOID;
+            if (out)
+                *out = i;
+            return EXIT_SUCCESS;
         }
     }
 
@@ -59,16 +62,14 @@ int instruction_from_mnemonic(const char *mnemonic, uint32_t *out,
     {
         if (!strcmp(imm_normal[i], mnemonic))
         {
-            if (i > 255)
-                *size = CPU_WIDTH_WORD;
-            else
-                *size = CPU_WIDTH_BYTE;
-
-            *out = i;
-            return 0;
+            if (size)
+                *size = (i > 255) ? CPU_WIDTH_WORD : CPU_WIDTH_BYTE;
+            if (out)
+                *out = i;
+            return EXIT_SUCCESS;
         }
     }
 
     /* NOT FOUND */
-    return 1;
+    return EXIT_FAILURE;
 }

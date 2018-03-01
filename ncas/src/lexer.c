@@ -9,9 +9,11 @@
 #include <string.h>
 #include <ctype.h>
 #include <lexer.h>
+#include <stdio.h>
 
 #include "lexer.h"
 #include "registers.h"
+#include "mnemonics.h"
 
 void token_delete_fn(void *token)
 {
@@ -30,21 +32,22 @@ struct lexer_context_s *lexer_init()
     return result;
 }
 
-enum token_type lexer_identify(const char *token)
+enum token_type lexer_identify(struct token_s *token)
 {
-    size_t length = strlen(token);
+    size_t length = strlen(token->contents);
 
     if (length == 0)
         return TOKEN_ILLEGAL;
 
-    enum keyword_type kw = lexer_identify_keyword(token);
+    enum keyword_type kw = lexer_identify_keyword(token->contents);
 
     if (kw != KW_LAST)
     {
+        token->data.keyword = kw;
         return TOKEN_KEYWORD;
     }
 
-    switch (token[0])
+    switch (token->contents[0])
     {
     case '[':
     case ']':
@@ -66,22 +69,27 @@ enum token_type lexer_identify(const char *token)
         if (!register_get(i))
             continue;
 
-        if (!strcmp(register_get(i)->name, token))
+        if (!strcmp(register_get(i)->name, token->contents))
+        {
+            token->data.register_name = i;
             return TOKEN_REGISTER;
+        }
     }
 
-    char hex = (token[length - 1] == 'h');
-    for (i = 0; i < length; ++i)
+    uint32_t instruction, width;
+    if (instruction_from_mnemonic(token->contents, &instruction, &width) == EXIT_SUCCESS)
     {
-        if (!(hex ? isxdigit(token[i]) : isdigit(token[i])))
-            break;
+        token->data.instruction.instruction = instruction;
+        token->data.instruction.width = width;
+        return TOKEN_INSTRUCTION;
     }
-    if (i == length || (hex && i == length - 1))
+
+    uint32_t number;
+    if (lexer_parse_number(token->contents, &number) == EXIT_SUCCESS)
     {
+        token->data.number = number;
         return TOKEN_NUMBER_LITERAL;
     }
-    else if (i > 0)
-        return TOKEN_ILLEGAL;
 
     return TOKEN_IDENTIFIER;
 }
@@ -89,11 +97,14 @@ enum token_type lexer_identify(const char *token)
 const char *keywords[] = {
         [ KW_ORIGIN ] = "origin",
         [ KW_CONST ] = "const",
+        [ KW_BYTE ] = "byte",
+        [ KW_WORD ] = "word",
+        [ KW_DWORD ] = "dword",
         [ KW_LAST ] = NULL
 };
 enum keyword_type lexer_identify_keyword(const char *token)
 {
-    int i = 0;
+    enum keyword_type i = KW_FIRST;
 
     for (; i < KW_LAST; ++i)
     {
@@ -104,15 +115,33 @@ enum keyword_type lexer_identify_keyword(const char *token)
     return KW_LAST;
 }
 
-uint32_t lexer_parse_number(const char *token)
+int lexer_parse_number(const char *token, uint32_t *out)
 {
-    uint32_t length = strlen(token);
-    int base        = 10;
+    size_t length = strlen(token);
+    int base;
 
-    if (token[length - 1] == 'h')
+    switch (token[length - 1])
+    {
+    case 'h':
         base = 16;
+        break;
+    case 'o':
+        base = 8;
+        break;
+    case 'd':
+        base = 10;
+        break;
+    case 'b':
+        base = 2;
+        break;
+    default:
+        return EXIT_FAILURE;
+    }
 
-    return strtoul(token, NULL, base);
+    if (out)
+        *out = (uint32_t) strtoul(token, NULL, base);
+
+    return EXIT_SUCCESS;
 }
 
 void lexer_split(struct lexer_context_s *context)
@@ -129,17 +158,7 @@ void lexer_split(struct lexer_context_s *context)
 
     struct token_s token;
     token.contents = buffer;
-    token.type     = lexer_identify(buffer);
-    switch (token.type)
-    {
-    case TOKEN_NUMBER_LITERAL:
-        token.data.number = lexer_parse_number(buffer);
-        break;
-    case TOKEN_KEYWORD:
-        token.data.keyword = lexer_identify_keyword(buffer);
-        break;
-    case TOKEN_REGISTER:
-    }
+    lexer_identify(&token);
 
     array_push(context->tokens, &token, 1);
 }
