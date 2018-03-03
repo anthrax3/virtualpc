@@ -59,6 +59,19 @@ void array_reserve(struct array_s *array, size_t length)
         array_resize(array, length);
 }
 
+void array_clear(struct array_s *array)
+{
+    size_t i = 0;
+    if (array->delete_fn)
+    {
+        for (; i < array->length; ++i)
+        {
+            array->delete_fn(array_get(array, i));
+        }
+    }
+    array->length = 0;
+}
+
 void array_push(struct array_s *array, const void *items, size_t count)
 {
     size_t new_size = array->reserved;

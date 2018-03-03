@@ -35,7 +35,6 @@ Memory before 0x100000 is reserved for system
 
 0x100000 - 0x200000 is available for programs
 
-
 NAS syntax:
 
 Literals:
@@ -61,8 +60,16 @@ const C 40d
 
 mov [rb + A * B - C], A * B * B ; Should be compiled as "mov [rb + 160], 4000"
 
-Statements:
+Sentences:
 
-<keyword> [arguments...]
-<instruction> [operands...]
-: <label name>
+* Sentences is a single line
+* Sentence can be a
+    * Hint sentence
+        For example "origin 100h"
+        Labels are hint sentences too
+    * Instruction sentence
+        For example "mov ra, rb"
+
+Operands:
+
+Either constant, register, address or void

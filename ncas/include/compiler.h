@@ -61,7 +61,14 @@ int compiler_step(struct compiler_state_s *state);
 struct token_s *compiler_consume_token(struct compiler_state_s *state);
 struct token_s *compiler_peek_token(struct compiler_state_s *state);
 
+/* Pseudocode
+ *
+ * consume(TOKEN_INSTRUCTION)
+ * 
+ */
 int compiler_read_instruction(struct compiler_state_s *state);
+
+
 int compiler_read_operand(struct compiler_state_s *state,
                           struct compiler_operand_s *out);
 
