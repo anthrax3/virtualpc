@@ -10,6 +10,7 @@
 #include <model.h>
 #include <analyzer.h>
 #include "cutter.h"
+#include "parser.h"
 
 int main(int argc, const char **argv)
 {
@@ -53,6 +54,19 @@ int main(int argc, const char **argv)
 
     analyze_sentences(model->sentences);
 
+    compiler_t compiler = compiler_create();
+    parser_t parser = parser_create(compiler);
+
+    parser_process_sentences(parser, model->sentences);
+
+    for (; i < compiler->bytecode->length; ++i)
+    {
+        printf("%d, ", *(int *)array_get(compiler->bytecode, i));
+    }
+    printf("\n");
+
+    parser_destroy(parser);
+    compiler_destroy(compiler);
     model_destroy(model);
 
     /*struct compiler_state_s *state = compiler_init();

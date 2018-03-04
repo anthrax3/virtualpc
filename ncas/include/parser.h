@@ -11,75 +11,41 @@
 
 #include "model.h"
 #include "instruction.h"
+#include "compiler.h"
+
+/*
+ * Either a const value, offset or label
+ * Is (byte)-1 same as (dword)-1 for the compiler?
+ * Maybe there's a need to store the size too. TODO
+ * Max size is 32bit anyway
+ */
+struct parser_constant_s
+{
+    char name[32];
+    uint32_t value;
+};
 
 typedef struct parser_s
 {
+    compiler_t compiler;
 
+    array_t constants;
+    sentence_t current_sentence;
+    size_t word_index;
 } *parser_t;
 
-parser_t parser_create();
+parser_t parser_create(compiler_t compiler);
 void parser_destroy(parser_t parser);
 
-/*
- * Hints won't be actually parsed, but passed straight to compiler instead.
- */
-struct parsed_hint
-{
-    sentence_t sentence;
-};
+void parser_add_const(parser_t parser, const char *name, uint32_t value);
+int parser_lookup_const(parser_t parser, const char *name, uint32_t *out);
 
-struct parsed_operand_s
-{
-    enum operand_mode mode;
-    /*
-     * Value:
-     *  0: immediate value
-     *  1: address
-     *  2: offset
-     *  3: -
-     *  4: -
-     *  5: offset
-     *  6: -
-     *  7: -
-     */
-    uint32_t value;
-    /*
-     * Only used in mode 6
-     */
-    uint16_t factor;
-    /*
-     * Modes 3..6
-     */
-    enum register_name rname1;
-    /*
-     * Mode 6 only
-     */
-    enum register_name rname2;
-};
+void parser_process_sentences(parser_t parser, array_t sentences);
+void parser_process_sentence(parser_t parser, sentence_t sentence);
 
-struct parsed_instruction_s
-{
-    uint32_t instruction;
-    enum cpu_width width;
+void parser_process_hint(parser_t parser);
+void parser_process_instruction(parser_t parser);
 
-    struct parsed_operand_s operands[2];
-};
-
-struct parsed_statement_s
-{
-    enum sentence_meaning meaning;
-
-    union
-    {
-        struct parsed_instruction_s instruction;
-        struct parsed_hint hint;
-    };
-};
-
-void parser_emit_statement(struct parsed_statement_s statement);
-
-
+int parser_consume_identifier(parser_t parser, const char **out);
+int parser_consume_number(parser_t parser, uint32_t *out);
 int parser_consume_operand(parser_t parser, struct parsed_operand_s *output);
-int parser_consume_instruction(parser_t parser, struct parsed_instruction_s *output);
-
-void parser_expect_number(parser_t parser);

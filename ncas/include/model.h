@@ -44,6 +44,11 @@ enum keyword
      * store "Testing", byte 0h
      */
     KW_STORE,
+    /*
+     * (for operands)
+     * Indicates that the following number is actually offset from current location
+     */
+    KW_OFFSET,
     KW_COUNT
 };
 

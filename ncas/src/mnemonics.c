@@ -63,7 +63,7 @@ int instruction_from_mnemonic(const char *mnemonic, uint32_t *out,
         if (!strcmp(imm_normal[i], mnemonic))
         {
             if (width)
-                *width = (i > 255) ? CPU_WIDTH_WORD : CPU_WIDTH_BYTE;
+                *width = (i > 63) ? CPU_WIDTH_WORD : CPU_WIDTH_BYTE;
             if (out)
                 *out = i;
             return EXIT_SUCCESS;

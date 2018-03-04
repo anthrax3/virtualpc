@@ -1,6 +1,6 @@
 set(Sources
         src/main.c
-         src/mnemonics.c src/cutter.c src/analyzer.c src/model.c)
+         src/mnemonics.c src/cutter.c src/analyzer.c src/model.c src/parser.c src/compiler.c)
 
 set(Headers
         include/mnemonics.h ../common/include/iset/micro.h include/cutter.h include/analyzer.h include/model.h include/compiler.h include/parser.h)

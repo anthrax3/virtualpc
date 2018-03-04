@@ -14,7 +14,8 @@
 static const char *keyword_table[] = {[KW_LABEL]  = "label",
                                       [KW_CONST]  = "const",
                                       [KW_ORIGIN] = "origin",
-                                      [KW_STORE]  = "store", NULL };
+                                      [KW_STORE]  = "store",
+                                      [KW_OFFSET] = "offset", NULL };
 
 static int identify_keyword(word_t word)
 {
@@ -226,6 +227,7 @@ void analyze_word(word_t word)
     }
     else
     {
-        printf("(UNKNOWN)\n");
+        word->meaning = WM_IDENTIFIER;
+        printf("Identifier");
     }
 }
