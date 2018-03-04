@@ -3,7 +3,7 @@ set(Sources
          src/mnemonics.c src/cutter.c src/analyzer.c src/model.c)
 
 set(Headers
-        include/mnemonics.h ../common/include/iset/micro.h include/cutter.h include/analyzer.h include/model.h)
+        include/mnemonics.h ../common/include/iset/micro.h include/cutter.h include/analyzer.h include/model.h include/compiler.h include/parser.h)
 
 add_executable(ncas ${Sources} ${CommonSources} ${Headers} ${CommonHeaders})
 

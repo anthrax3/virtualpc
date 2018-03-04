@@ -22,6 +22,6 @@ origin BaseAddress
     mov [60h], 1                        ; vio[0].r0: VDCS_TERM_PRINT
                                         ; This actually sends the command to terminal to print the message. r0 is then reset by the device.
     cmp [ra + MessageAddress], 0        ; if end of string is reached (null character)
-    je reset                            ; jump to iterator reset
+    jz reset                            ; jump to iterator reset
     inc ra                              ; iterator++
     jmp loop                            ; go back to loop

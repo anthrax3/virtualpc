@@ -120,11 +120,8 @@ static int identify_number(word_t word)
     char *endptr;
     uint32_t number = (uint32_t) strtoul(word->content, &endptr, base);
 
-    if (number == 0)
-    {
-        if (endptr == word->content)
-            return EXIT_FAILURE;
-    }
+    if (endptr < word->content + length - 1)
+        return EXIT_FAILURE;
 
     word->meaning     = WM_NUMBER;
     word->data.number = number;
@@ -209,9 +206,14 @@ void analyze_sentence(sentence_t sentence)
     }
 }
 
+static const char *meanings[] = {
+        "Unknown", "Keyword", "Width", "Operator", "Comma", "AddressingStart", "AddressingEnd",
+        "Number", "String", "Mnemonic", "Register", "Identifier", NULL
+};
+
 void analyze_word(word_t word)
 {
-    printf("? %s\n", word->content);
+    printf("? %s => ", word->content);
 
     if (identify_keyword(word) == EXIT_SUCCESS ||
         identify_width(word) == EXIT_SUCCESS ||
@@ -220,10 +222,10 @@ void analyze_word(word_t word)
         identify_mnemonic(word) == EXIT_SUCCESS ||
         identify_register(word) == EXIT_SUCCESS)
     {
-        printf("! %d\n", word->meaning);
+        printf("%s\n", meanings[word->meaning]);
     }
     else
     {
-        printf("# undefined meaning\n");
+        printf("(UNKNOWN)\n");
     }
 }
