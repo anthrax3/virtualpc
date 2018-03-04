@@ -6,5 +6,7 @@
 
 #include <stdint.h>
 
+#include "instruction.h"
+
 int instruction_from_mnemonic(const char *mnemonic, uint32_t *out,
-                              uint32_t *size);
+                              enum cpu_width *size);

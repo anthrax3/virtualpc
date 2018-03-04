@@ -28,8 +28,8 @@ const char *imm_normal[] = {
         [ISET_CAT_DECREMENT] = "dec",
 
         /* Jumps */
-        [ISET_CAT_JUMP] = "jmp", [ISET_CAT_JUMP_IF_EQUAL] = "je",
-        [ISET_CAT_JUMP_IF_NOT_EQUAL] = "jne", [ISET_CAT_JUMP_IF_GREATER] = "jg",
+        [ISET_CAT_JUMP] = "jmp", [ISET_CAT_JUMP_IF_ZERO] = "jz",
+        [ISET_CAT_JUMP_IF_NOT_ZERO] = "jnz", [ISET_CAT_JUMP_IF_GREATER] = "jg",
         [ISET_CAT_JUMP_IF_GREATER_OR_EQUAL] = "jge",
         [ISET_CAT_JUMP_IF_LESS]             = "jl",
         [ISET_CAT_JUMP_IF_LESS_OR_EQUAL]    = "jle",
@@ -43,15 +43,15 @@ const char *imm_normal[] = {
 };
 
 int instruction_from_mnemonic(const char *mnemonic, uint32_t *out,
-                              uint32_t *size)
+                              enum cpu_width *width)
 {
     uint32_t i;
     for (i = 0; i < sizeof(imm_micro) / sizeof(imm_micro[0]); ++i)
     {
         if (!strcmp(imm_micro[i], mnemonic))
         {
-            if (size)
-                *size = CPU_WIDTH_VOID;
+            if (width)
+                *width = CPU_WIDTH_VOID;
             if (out)
                 *out = i;
             return EXIT_SUCCESS;
@@ -62,8 +62,8 @@ int instruction_from_mnemonic(const char *mnemonic, uint32_t *out,
     {
         if (!strcmp(imm_normal[i], mnemonic))
         {
-            if (size)
-                *size = (i > 255) ? CPU_WIDTH_WORD : CPU_WIDTH_BYTE;
+            if (width)
+                *width = (i > 255) ? CPU_WIDTH_WORD : CPU_WIDTH_BYTE;
             if (out)
                 *out = i;
             return EXIT_SUCCESS;

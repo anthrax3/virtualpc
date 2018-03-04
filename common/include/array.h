@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 
-struct array_s
+typedef struct array_s
 {
     void (*delete_fn)(void *);
 
@@ -17,17 +17,17 @@ struct array_s
     size_t length;
     size_t reserved;
     void *memory;
-};
+} * array_t;
 
-struct array_s *array_init(size_t item_size, void (*delete_fn)(void *));
-void array_destroy(struct array_s *array);
+array_t array_init(size_t item_size, void (*delete_fn)(void *));
+void array_destroy(array_t array);
 
-void array_resize(struct array_s *array, size_t length);
-void array_reserve(struct array_s *array, size_t length);
-void array_clear(struct array_s *array);
+void array_resize(array_t array, size_t length);
+void array_reserve(array_t array, size_t length);
+void array_clear(array_t array);
 
-void array_push(struct array_s *array, const void *items, size_t count);
-void *array_pop(struct array_s *array);
+void array_push(array_t array, const void *items, size_t count);
+void *array_pop(array_t array);
 
-void *array_get(struct array_s *array, size_t index);
-void array_set(struct array_s *array, size_t index, const void *item);
+void *array_get(array_t array, size_t index);
+void array_set(array_t array, size_t index, const void *item);

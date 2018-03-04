@@ -4,9 +4,9 @@
 
 origin 100000h
 
-: reset
+label reset
 	xor ra, ra                      ; reset ra
-: loop
+label loop
 	cmp [60h], 0                    ; vio[0].r0: is device ready?
 	jnz loop                        ; loop until terminal is ready
 	mov byte [80h], [ra + 100100h]  ; vio[0].data[0]: set the message (single character)

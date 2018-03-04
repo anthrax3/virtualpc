@@ -7,7 +7,8 @@
 
 #include "array.h"
 #include <stdio.h>
-#include "compiler.h"
+#include <model.h>
+#include <analyzer.h>
 #include "cutter.h"
 
 int main(int argc, const char **argv)
@@ -23,21 +24,26 @@ int main(int argc, const char **argv)
     if (file == NULL)
         return EXIT_FAILURE;
 
-    struct cutter_s *cutter = cutter_init();
+    model_t model = model_create();
 
-    char c;
+    struct cutter_s *cutter = cutter_init(model->sentences);
+
+    int c;
     while ((c = fgetc(file)) != EOF)
-        cutter_push(cutter, c);
+        cutter_push(cutter, (char) c);
+    cutter_end(cutter);
+    cutter_destroy(cutter);
 
     size_t i = 0;
-    for (; i < cutter->sentences->length; ++i)
+    for (; i < model->sentences->length; ++i)
     {
-        char **sentence = *(char ***)array_get(cutter->sentences, i);
+        sentence_t sentence = *(sentence_t *) array_get(model->sentences, i);
 
-        while (sentence && *sentence != NULL)
+        size_t j = 0;
+        for (; j < sentence->words->length; ++j)
         {
-            printf("%s ", *sentence);
-            ++sentence;
+            word_t word = *(word_t *) array_get(sentence->words, j);
+            printf("%s ", word->content);
         }
 
         printf("\n");
@@ -45,7 +51,9 @@ int main(int argc, const char **argv)
 
     printf("\n");
 
-    cutter_destroy(cutter);
+    analyze_sentences(model->sentences);
+
+    model_destroy(model);
 
     /*struct compiler_state_s *state = compiler_init();
 

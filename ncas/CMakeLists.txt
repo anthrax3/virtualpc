@@ -1,12 +1,9 @@
 set(Sources
         src/main.c
-        src/lexer.c
-        src/compiler.c src/mnemonics.c src/cutter.c)
+         src/mnemonics.c src/cutter.c src/analyzer.c src/model.c)
 
 set(Headers
-        include/lexer.h
-        include/compiler.h
-        include/compiler.h include/mnemonics.h ../common/include/iset/micro.h include/cutter.h)
+        include/mnemonics.h ../common/include/iset/micro.h include/cutter.h include/analyzer.h include/model.h)
 
 add_executable(ncas ${Sources} ${CommonSources} ${Headers} ${CommonHeaders})
 
