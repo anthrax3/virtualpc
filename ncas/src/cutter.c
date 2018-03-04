@@ -23,7 +23,7 @@ void sentence_delete_fn(void *sentence)
         ++list;
     }
 
-    free(list);
+    free(*(char ***)sentence);
 }
 
 struct cutter_s *cutter_init()
@@ -107,8 +107,6 @@ void cutter_cut_word(struct cutter_s *cutter)
         strncpy(word, cutter->characters->memory, cutter->characters->length);
         array_clear(cutter->characters);
         array_push(cutter->words, &word, 1);
-
-        printf("cut word: \"%s\"\n", word);
     }
 }
 
@@ -116,7 +114,7 @@ void cutter_cut_sentence(struct cutter_s *cutter)
 {
     if (cutter->words->length)
     {
-        char **sentence = malloc(cutter->words->length + 1);
+        char **sentence = malloc((cutter->words->length + 1) * sizeof(char *));
         sentence[cutter->words->length] = NULL;
 
         size_t i = 0;
@@ -124,20 +122,12 @@ void cutter_cut_sentence(struct cutter_s *cutter)
         {
             const char *word = *(char **)array_get(cutter->words, i);
 
-            if (word == NULL)
-            {
-                printf("!!!!! WORD IS NULL !!!!!!!!!!!\n");
-                continue;
-            }
-
             sentence[i] = calloc(sizeof(char), strlen(word) + 1);
             strcpy(sentence[i], word);
-            printf("sent word: %s\n", sentence[i]);
         }
 
         array_clear(cutter->words);
         array_push(cutter->sentences, &sentence, 1);
-        printf("cut sentence\n");
     }
 }
 

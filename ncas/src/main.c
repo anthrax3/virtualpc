@@ -36,7 +36,7 @@ int main(int argc, const char **argv)
 
         while (sentence && *sentence != NULL)
         {
-            printf("%s, ", *sentence);
+            printf("%s ", *sentence);
             ++sentence;
         }
 
